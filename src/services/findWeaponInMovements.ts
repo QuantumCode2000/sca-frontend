@@ -1,6 +1,16 @@
 const findWeaponInMovements = (weaponCode, movements) => {
+  weaponCode = weaponCode.trim();
+
+  if (!Array.isArray(movements)) {
+    console.error("movements is not an array");
+    return {
+      message: "Error: movements is not an array",
+      isPending: false,
+    };
+  }
+
   const filteredMovements = movements.filter(
-    (movement) => movement.codigo === weaponCode,
+    (movement) => movement.codigo.trim() === weaponCode
   );
 
   if (filteredMovements.length === 0) {
@@ -17,7 +27,8 @@ const findWeaponInMovements = (weaponCode, movements) => {
   });
 
   const { fechaRegreso } = latestMovement;
-  if (fechaRegreso === "Pendiente") {
+
+  if (fechaRegreso.trim() === "Pendiente") {
     return {
       message: "El arma no ha regresado",
       movement: latestMovement,
@@ -31,4 +42,5 @@ const findWeaponInMovements = (weaponCode, movements) => {
     };
   }
 };
+
 export { findWeaponInMovements };

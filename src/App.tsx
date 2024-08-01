@@ -9,6 +9,7 @@ import Login from "./pages/Login/Login";
 import WeaponRegister from "./views/WeaponRegister/WeaponRegister";
 import PersonalRegister from "./views/PersonalRegister/PersonalRegister";
 import Example from "./views/Example/Example";
+import Actas from "./views/Actas/Actas";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -43,8 +44,8 @@ const router = createBrowserRouter([
         element: <PersonalRegister />,
       },
       {
-        path: "example",
-        element: <Example />,
+        path: "actas",
+        element: <Actas />,
       },
     ],
   },

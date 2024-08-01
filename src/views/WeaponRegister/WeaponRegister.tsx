@@ -5,98 +5,71 @@ import { useWeapons } from "../../contexts/WeaponsContext/WeaponsContext";
 import Button from "../../components/Button/Button";
 import Content from "../../components/Content/Content";
 import Modal from "../../components/Modal/Modal";
-import ModalData from "./ModalData";
 import FormWeaponRegister from "./FormWeaponRegister";
+import FormWeaponEdit from "./FormWeaponEdit";
+import ViewMore from "../../components/ViewMore/ViewMore";
+import ButtonIcon from "../../components/ButtonIcon/ButtonIcon";
+import { LuClipboardEdit, LuFileText } from "react-icons/lu";
+import type { Weapon } from "../../contexts/WeaponsContext/interfaces";
 
-const renderCell = (item, key, handleViewMore) => {
-  switch (key) {
-    case "acciones":
-      return (
-        <div className="flex space-x-2">
-          <button
-            className="bg-blue-500 text-white px-2 py-1 rounded"
-            onClick={() => handleViewMore(item.codigo)}
-          >
-            Ver Mas
-          </button>
-        </div>
-      );
-    case "estado":
-      return (
-        <div className="flex space-x-2">
-          {item[key] === "B/E" ? (
-            <span className="bg-green-500 text-white px-2 py-1 rounded">
-              {item[key]}
-            </span>
-          ) : item[key] === "R/E" ? (
-            <span className="bg-yellow-500 text-white px-2 py-1 rounded">
-              {item[key]}
-            </span>
-          ) : (
-            <span className="bg-red-500 text-white px-2 py-1 rounded">
-              {item[key]}
-            </span>
-          )}
-        </div>
-      );
-    default:
-      return item[key];
-  }
+const firstState: Weapon = {
+  codigo: "",
+  nroarma: "",
+  estado: "",
+  clasification: "",
+  propietario: "",
+  modelo: "",
+  calibre: "",
+  observations: "",
+  industria: "",
+  armamento: "",
 };
 
-const WeaponRegister = () => {
-  const { weapons, getWeaponByCodigo, addWeapon } = useWeapons();
-  const [selectedWeapon, setSelectedWeapon] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
-  const [formData, setFormData] = useState({
-    codigo: "",
-    nroarma: "",
-    clasificacion: "",
-    propietario: "",
-    armamento: "",
-    modelo: "",
-    calibre: "",
-    industria: "",
-    estado: "",
-    observations: "",
-  });
-
-  const [errors, setErrors] = useState({});
-
-  const handleViewMore = (codigo) => {
-    const weapon = getWeaponByCodigo(codigo);
-    setSelectedWeapon(weapon);
-    setIsModalOpen(true);
-  };
+const WeaponRegister: React.FC = () => {
+  const [isModalOpen, setOpenModal] = useState<boolean>(false);
+  const [isEdit, setIsEdit] = useState<boolean>(false);
+  const [isViewMoreOpen, setViewMoreOpen] = useState<boolean>(false);
+  const [formData, setFormData] = useState<Weapon>(firstState);
+  const [selectedWeapon, setSelectedWeapon] = useState<Weapon | null>(null);
+  const { weapons, addWeapon, updateWeapon } = useWeapons();
 
   const closeModal = () => {
-    setIsModalOpen(false);
+    setOpenModal(false);
+    setIsEdit(false);
+    setFormData(firstState);
+  };
+
+  const closeViewMoreModal = () => {
+    setViewMoreOpen(false);
     setSelectedWeapon(null);
   };
 
-  const openRegisterModal = () => {
-    setIsRegisterModalOpen(true);
+  const openModal = () => {
+    setOpenModal(true);
+    setIsEdit(false);
+    setFormData(firstState);
   };
 
-  const closeRegisterModal = () => {
-    setIsRegisterModalOpen(false);
-    setFormData({
-      codigo: "",
-      nroarma: "",
-      clasificacion: "",
-      propietario: "",
-      armamento: "",
-      modelo: "",
-      calibre: "",
-      industria: "",
-      estado: "",
-      observations: "",
-    });
-    setErrors({});
+  const handleViewMore = (codigo: string) => {
+    const weapon = weapons.find((weapon) => weapon.codigo === codigo);
+    if (weapon) {
+      setSelectedWeapon(weapon);
+      setViewMoreOpen(true);
+    }
   };
 
-  const handleChange = (e) => {
+  const handleEdit = (codigo: string) => {
+    const weapon = weapons.find((weapon) => weapon.codigo === codigo);
+    if (weapon) {
+      setFormData(weapon);
+      setIsEdit(true);
+      setOpenModal(true);
+    }
+  };
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+  ) => {
     const { id, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
@@ -104,19 +77,33 @@ const WeaponRegister = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const newErrors = {};
-    if (!formData.codigo) newErrors.codigo = "Código es requerido";
-    if (!formData.nroarma) newErrors.nroarma = "Número de Arma es requerido";
-    if (!formData.modelo) newErrors.modelo = "Modelo es requerido";
-    if (!formData.calibre) newErrors.calibre = "Calibre es requerido";
-    if (!formData.industria) newErrors.industria = "Industria es requerida";
-    setErrors(newErrors);
-
-    if (Object.keys(newErrors).length === 0) {
+  const handleSubmit = () => {
+    if (isEdit) {
+      updateWeapon(formData);
+    } else {
       addWeapon(formData);
-      closeRegisterModal();
+    }
+    closeModal();
+  };
+
+  const renderCell = (item: Weapon, key: keyof Weapon) => {
+    switch (key) {
+      case "estado":
+        return (
+          <span
+            className={
+              item[key] === "B/E"
+                ? "bg-green-500 text-white px-2 py-1 rounded"
+                : item[key] === "R/E"
+                ? "bg-yellow-500 text-white px-2 py-1 rounded"
+                : "bg-red-500 text-white px-2 py-1 rounded"
+            }
+          >
+            {item[key]}
+          </span>
+        );
+      default:
+        return item[key];
     }
   };
 
@@ -124,44 +111,63 @@ const WeaponRegister = () => {
     <>
       <Content>
         <Table
-          header={headersWeapons}
+          header={{ ...headersWeapons.tabla, acciones: "Acciones" }}
           body={weapons}
-          renderCell={(item, key) => renderCell(item, key, handleViewMore)}
+          renderCell={(item: Weapon, key: keyof Weapon | "acciones") => (
+            <div>
+              {key !== "acciones" && renderCell(item, key as keyof Weapon)}
+              {key === "acciones" && (
+                <div className="flex gap-2">
+                  <ButtonIcon
+                    icon={<LuFileText />}
+                    onClick={() => handleViewMore(item.codigo)}
+                    textTooltip="Ver más"
+                  />
+                  <ButtonIcon
+                    icon={<LuClipboardEdit />}
+                    onClick={() => handleEdit(item.codigo)}
+                    textTooltip="Editar"
+                  />
+                </div>
+              )}
+            </div>
+          )}
         />
       </Content>
 
-      {selectedWeapon && (
-        <Modal
-          isOpen={isModalOpen}
-          onClose={closeModal}
-          title="Detalles del Arma"
-          onConfirm={closeModal}
-        >
-          <ModalData data={selectedWeapon} titles={headersWeapons} />
-        </Modal>
-      )}
-
       <div className="flex justify-end mt-4">
-        <Button
-          textStyle={""}
-          text={"Registrar Armamento"}
-          onClick={openRegisterModal}
-        />
+        <Button text="Registrar Armamento" onClick={openModal} textStyle={""} />
       </div>
 
       <Modal
-        title={"Registrar Armamento"}
-        isOpen={isRegisterModalOpen}
-        onClose={closeRegisterModal}
-        onConfirm={handleSubmit}
-        viewButton={true}
+        title={isEdit ? "Editar Armamento" : "Registrar Armamento"}
+        isOpen={isModalOpen}
+        onClose={closeModal}
       >
-        <FormWeaponRegister
-          formData={formData}
-          errors={errors}
-          handleChange={handleChange}
-        />
+        {isEdit ? (
+          <FormWeaponEdit
+            formData={formData}
+            handleChange={handleChange}
+            handleSubmit={handleSubmit}
+          />
+        ) : (
+          <FormWeaponRegister
+            formData={formData}
+            handleChange={handleChange}
+            handleSubmit={handleSubmit}
+          />
+        )}
       </Modal>
+
+      {selectedWeapon && (
+        <Modal
+          isOpen={isViewMoreOpen}
+          onClose={closeViewMoreModal}
+          title="Detalles del Arma"
+        >
+          <ViewMore titles={headersWeapons.verMas} data={selectedWeapon} />
+        </Modal>
+      )}
     </>
   );
 };

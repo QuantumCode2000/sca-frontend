@@ -1,357 +1,68 @@
-// // import Button from "../../components/Button/Button";
-// // import Table from "../../components/Table/Table";
-// // import { useUsers } from "../../contexts/UsersContext/UsersContext";
-// // import { headersUsers } from "../../data/headers";
-// // import Modal from "../../components/Modal/Modal";
-// // import { useState } from "react";
-// // import FormPersonalRegister from "./FormPersonalRegister";
-// // import Content from "../../components/Content/Content";
-// // const PersonalRegister = () => {
-// //   const [isModalOpen, setOpenModal] = useState(false);
-// //   const [formData, setFormData] = useState({
-// //     ci: "",
-// //     extension: "",
-// //     grado: "",
-// //     nombre: "",
-// //     carnetMilitar: "",
-// //     correo: "",
-// //   });
-
-// //   const [errors, setErrors] = useState({});
-// //   const { users, addUser } = useUsers();
-
-// //   const closeModal = () => setOpenModal(false);
-// //   const openModal = () => {
-// //     setOpenModal(true);
-// //     setFormData({
-// //       ci: "",
-// //       extension: "",
-// //       grado: "",
-// //       nombre: "",
-// //       carnetMilitar: "",
-// //       correo: "",
-// //     });
-// //     setErrors({});
-// //   };
-
-// //   const handleChange = (e) => {
-// //     const { id, value } = e.target;
-// //     setFormData((prevData) => ({
-// //       ...prevData,
-// //       [id]: value,
-// //     }));
-// //   };
-
-// //   const handleSubmit = (e) => {
-// //     e.preventDefault();
-// //     const newErrors = {};
-// //     if (!formData.ci) newErrors.ci = "CI es requerido";
-// //     if (!formData.nombre) newErrors.nombre = "Nombre es requerido";
-// //     if (!formData.correo) newErrors.correo = "Correo Electrónico es requerido";
-// //     setErrors(newErrors);
-
-// //     if (Object.keys(newErrors).length === 0) {
-// //       addUser({
-// //         ci: formData.ci,
-// //         extention: formData.extension,
-// //         cm: formData.carnetMilitar,
-// //         militaryRank: formData.grado,
-// //         nombre: formData.nombre,
-// //       });
-// //       closeModal();
-// //     }
-// //   };
-
-// //   return (
-// //     <>
-// //       <Content>
-// //         <Table header={headersUsers} body={users} />
-// //       </Content>
-// //       <div className="flex justify-end mt-4 ">
-// //         <Button
-// //           textStyle={""}
-// //           text={"Registrar Personal"}
-// //           onClick={openModal}
-// //         />
-// //       </div>
-// //       <Modal
-// //         title={"Registrar Personal"}
-// //         isOpen={isModalOpen}
-// //         onClose={closeModal}
-// //         onConfirm={handleSubmit}
-// //         viewButton={true}
-// //       >
-// //         <FormPersonalRegister
-// //           formData={formData}
-// //           errors={errors}
-// //           handleChange={handleChange}
-// //           handleSubmit={handleSubmit}
-// //         />
-// //       </Modal>
-// //     </>
-// //   );
-// // };
-
-// // export default PersonalRegister;
-// import Button from "../../components/Button/Button";
-// import Table from "../../components/Table/Table";
-// import { useUsers } from "../../contexts/UsersContext/UsersContext";
-// import { headersUsers } from "../../data/headers";
-// import Modal from "../../components/Modal/Modal";
-// import { useState } from "react";
-// import FormPersonalRegister from "./FormPersonalRegister";
-// import Content from "../../components/Content/Content";
-
-// const renderCell = (item, key) => {
-//   switch (key) {
-//     case "inSystemPermission":
-//       return (
-//         <span
-//           className={
-//             item[key] === "Admin"
-//               ? "text-red-500"
-//               : item[key] === "User"
-//               ? "text-green-500"
-//               : "text-gray-500"
-//           }
-//         >
-//           {item[key]}
-//         </span>
-//       );
-//     case "estado":
-//       return (
-//         <span
-//           className={
-//             item[key] === "Activo"
-//               ? "text-green-500"
-//               : item[key] === "Inactivo"
-//               ? "text-red-500"
-//               : "text-gray-500"
-//           }
-//         >
-//           {item[key]}
-//         </span>
-//       );
-//     case "rol":
-//       return (
-//         <span
-//           className={
-//             item[key] === "Administrador"
-//               ? "text-blue-500"
-//               : item[key] === "Usuario"
-//               ? "text-yellow-500"
-//               : "text-gray-500"
-//           }
-//         >
-//           {item[key]}
-//         </span>
-//       );
-//     default:
-//       return item[key];
-//   }
-// };
-
-// const PersonalRegister = () => {
-//   const [isModalOpen, setOpenModal] = useState(false);
-//   const [formData, setFormData] = useState({
-//     ci: "",
-//     extension: "",
-//     grado: "",
-//     nombre: "",
-//     carnetMilitar: "",
-//     correo: "",
-//   });
-
-//   const [errors, setErrors] = useState({});
-//   const { users, addUser } = useUsers();
-
-//   const closeModal = () => setOpenModal(false);
-//   const openModal = () => {
-//     setOpenModal(true);
-//     setFormData({
-//       ci: "",
-//       extension: "",
-//       grado: "",
-//       nombre: "",
-//       carnetMilitar: "",
-//       correo: "",
-//     });
-//     setErrors({});
-//   };
-
-//   const handleChange = (e) => {
-//     const { id, value } = e.target;
-//     setFormData((prevData) => ({
-//       ...prevData,
-//       [id]: value,
-//     }));
-//   };
-
-//   const handleSubmit = (e) => {
-//     e.preventDefault();
-//     const newErrors = {};
-//     if (!formData.ci) newErrors.ci = "CI es requerido";
-//     if (!formData.nombre) newErrors.nombre = "Nombre es requerido";
-//     if (!formData.correo) newErrors.correo = "Correo Electrónico es requerido";
-//     setErrors(newErrors);
-
-//     if (Object.keys(newErrors).length === 0) {
-//       addUser({
-//         ci: formData.ci,
-//         extention: formData.extension,
-//         cm: formData.carnetMilitar,
-//         militaryRank: formData.grado,
-//         nombre: formData.nombre,
-//       });
-//       closeModal();
-//     }
-//   };
-
-//   return (
-//     <>
-//       <Content>
-//         <Table header={headersUsers} body={users} renderCell={renderCell} />
-//       </Content>
-//       <div className="flex justify-end mt-4 ">
-//         <Button
-//           textStyle={""}
-//           text={"Registrar Personal"}
-//           onClick={openModal}
-//         />
-//       </div>
-//       <Modal
-//         title={"Registrar Personal"}
-//         isOpen={isModalOpen}
-//         onClose={closeModal}
-//         onConfirm={handleSubmit}
-//         viewButton={true}
-//       >
-//         <FormPersonalRegister
-//           formData={formData}
-//           errors={errors}
-//           handleChange={handleChange}
-//           handleSubmit={handleSubmit}
-//         />
-//       </Modal>
-//     </>
-//   );
-// };
-
-// export default PersonalRegister;
-
-import React, { useState } from "react";
+import { useState } from "react";
 import Button from "../../components/Button/Button";
 import Table from "../../components/Table/Table";
 import { useUsers } from "../../contexts/UsersContext/UsersContext";
 import { headersUsers } from "../../data/headers";
 import Modal from "../../components/Modal/Modal";
 import FormPersonalRegister from "./FormPersonalRegister";
+import FormPersonalEdit from "./FormPersonalEdit";
 import Content from "../../components/Content/Content";
-const renderCell = (item, key, handleEdit) => {
-  switch (key) {
-    case "inSystemPermission":
-      return (
-        <span
-          className={
-            item[key] === "Sí"
-              ? "bg-green-500 text-white px-2 py-1 rounded"
-              : "bg-red-500 text-white px-2 py-1 rounded"
-          }
-        >
-          {item[key]}
-        </span>
-      );
-    case "estado":
-      return (
-        <span
-          className={
-            item[key] === "Activo"
-              ? "bg-green-500 text-white px-2 py-1 rounded"
-              : "bg-red-500 text-white px-2 py-1 rounded"
-          }
-        >
-          {item[key]}
-        </span>
-      );
-    case "rol":
-      return (
-        <span
-          className={
-            item[key] === "Administrador"
-              ? "bg-blue-500 text-white px-2 py-1 rounded"
-              : item[key] === "Encargado"
-              ? "bg-green-500 text-white px-2 py-1 rounded"
-              : "bg-yellow-500 text-white px-2 py-1 rounded"
-          }
-        >
-          {item[key]}
-        </span>
-      );
-    case "acciones":
-      return (
-        <button
-          className="bg-blue-500 text-white px-2 py-1 rounded"
-          onClick={() => handleEdit(item.ci)}
-        >
-          Editar
-        </button>
-      );
-    default:
-      return item[key];
-  }
+import ViewMore from "../../components/ViewMore/ViewMore";
+import type { User } from "../../contexts/UsersContext/interfaces";
+import { LuClipboardEdit, LuFileText } from "react-icons/lu";
+import ButtonIcon from "../../components/ButtonIcon/ButtonIcon";
+
+interface FormData extends User {}
+
+const firstState: FormData = {
+  ci: "",
+  extension: "",
+  grado: "",
+  especialidad: "",
+  nombre: "",
+  apellidoPaterno: "",
+  apellidoMaterno: "",
+  cm: "",
+  correo: "",
+  inSystemPermission: "No",
+  rol: "Personal",
+  estado: "Activo",
 };
 
-const PersonalRegister = () => {
-  const [isModalOpen, setOpenModal] = useState(false);
-  const [isEdit, setIsEdit] = useState(false);
-  const [formData, setFormData] = useState({
-    ci: "",
-    extension: "",
-    grado: "",
-    nombre: "",
-    carnetMilitar: "",
-    correo: "",
-    inSystemPermission: "No",
-    rol: "Personal",
-    estado: "Activo",
-  });
-  const [errors, setErrors] = useState({});
+const PersonalRegister: React.FC = () => {
+  const [isModalOpen, setOpenModal] = useState<boolean>(false);
+  const [isEdit, setIsEdit] = useState<boolean>(false);
+  const [isViewMoreOpen, setViewMoreOpen] = useState<boolean>(false);
+  const [formData, setFormData] = useState<FormData>(firstState);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const { users, addUser, updateUser } = useUsers();
 
   const closeModal = () => {
     setOpenModal(false);
     setIsEdit(false);
-    setFormData({
-      ci: "",
-      extension: "",
-      grado: "",
-      nombre: "",
-      carnetMilitar: "",
-      correo: "",
-      inSystemPermission: "No",
-      rol: "Personal",
-      estado: "Activo",
-    });
-    setErrors({});
+    setFormData(firstState);
+  };
+
+  const closeViewMoreModal = () => {
+    setViewMoreOpen(false);
+    setSelectedUser(null);
   };
 
   const openModal = () => {
     setOpenModal(true);
-    setFormData({
-      ci: "",
-      extension: "",
-      grado: "",
-      nombre: "",
-      carnetMilitar: "",
-      correo: "",
-      inSystemPermission: "No",
-      rol: "Personal",
-      estado: "Activo",
-    });
-    setErrors({});
+    setIsEdit(false);
+    setFormData(firstState);
   };
 
-  const handleEdit = (ci) => {
+  const handleViewMore = (ci: string) => {
+    const user = users.find((user) => user.ci === ci);
+    if (user) {
+      setSelectedUser(user);
+      setViewMoreOpen(true);
+    }
+  };
+
+  const handleEdit = (ci: string) => {
     const user = users.find((user) => user.ci === ci);
     if (user) {
       setFormData(user);
@@ -360,7 +71,9 @@ const PersonalRegister = () => {
     }
   };
 
-  const handleChange = (e) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+  ) => {
     const { id, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
@@ -368,26 +81,57 @@ const PersonalRegister = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const newErrors = {};
-    if (!formData.ci) newErrors.ci = "CI es requerido";
-    if (!formData.nombre) newErrors.nombre = "Nombre es requerido";
-    if (!formData.correo) newErrors.correo = "Correo Electrónico es requerido";
-    setErrors(newErrors);
+  const handleSubmit = () => {
+    if (isEdit) {
+      updateUser(formData);
+    } else {
+      addUser(formData);
+    }
+    closeModal();
+  };
 
-    if (Object.keys(newErrors).length === 0) {
-      if (isEdit) {
-        updateUser(formData);
-      } else {
-        addUser({
-          ...formData,
-          inSystemPermission: "No",
-          rol: "Personal",
-          estado: "Activo",
-        });
-      }
-      closeModal();
+  const renderCell = (item: User, key: keyof User) => {
+    switch (key) {
+      case "inSystemPermission":
+        return (
+          <span
+            className={
+              item[key] === "Sí"
+                ? "bg-green-500 text-white px-2 py-1 rounded"
+                : "bg-red-500 text-white px-2 py-1 rounded"
+            }
+          >
+            {item[key]}
+          </span>
+        );
+      case "estado":
+        return (
+          <span
+            className={
+              item[key] === "Activo"
+                ? "bg-green-500 text-white px-2 py-1 rounded"
+                : "bg-red-500 text-white px-2 py-1 rounded"
+            }
+          >
+            {item[key]}
+          </span>
+        );
+      case "rol":
+        return (
+          <span
+            className={
+              item[key] === "Administrador"
+                ? "bg-blue-500 text-white px-2 py-1 rounded"
+                : item[key] === "Encargado"
+                ? "bg-green-500 text-white px-2 py-1 rounded"
+                : "bg-yellow-500 text-white px-2 py-1 rounded"
+            }
+          >
+            {item[key]}
+          </span>
+        );
+      default:
+        return item[key];
     }
   };
 
@@ -395,33 +139,64 @@ const PersonalRegister = () => {
     <>
       <Content>
         <Table
-          header={{ ...headersUsers, acciones: "Acciones" }}
+          header={{ ...headersUsers.tabla, acciones: "Acciones" }}
           body={users}
-          renderCell={(item, key) => renderCell(item, key, handleEdit)}
+          renderCell={(item: User, key: keyof User | "acciones") => (
+            <div>
+              {key !== "acciones" && renderCell(item, key as keyof User)}
+              {key === "acciones" && (
+                <div className="flex gap-2">
+                  <ButtonIcon
+                    icon={<LuFileText />}
+                    onClick={() => handleViewMore(item.ci)}
+                    textTooltip={"Ver más"}
+                  />
+                  <ButtonIcon
+                    icon={<LuClipboardEdit />}
+                    onClick={() => handleEdit(item.ci)}
+                    textTooltip={"Editar"}
+                  />
+                </div>
+              )}
+            </div>
+          )}
         />
       </Content>
       <div className="flex justify-end mt-4">
         <Button
-          textStyle={""}
           text={"Registrar Personal"}
           onClick={openModal}
+          textStyle={""}
         />
       </div>
       <Modal
         title={isEdit ? "Editar Personal" : "Registrar Personal"}
         isOpen={isModalOpen}
         onClose={closeModal}
-        onConfirm={handleSubmit}
-        viewButton={true}
       >
-        <FormPersonalRegister
-          formData={formData}
-          errors={errors}
-          handleChange={handleChange}
-          handleSubmit={handleSubmit}
-          isEdit={isEdit}
-        />
+        {isEdit ? (
+          <FormPersonalEdit
+            formData={formData}
+            handleChange={handleChange}
+            handleSubmit={handleSubmit}
+          />
+        ) : (
+          <FormPersonalRegister
+            formData={formData}
+            handleChange={handleChange}
+            handleSubmit={handleSubmit}
+          />
+        )}
       </Modal>
+      {selectedUser && (
+        <Modal
+          title="Detalles del Usuario"
+          isOpen={isViewMoreOpen}
+          onClose={closeViewMoreModal}
+        >
+          <ViewMore titles={headersUsers.verMas} data={selectedUser} />
+        </Modal>
+      )}
     </>
   );
 };

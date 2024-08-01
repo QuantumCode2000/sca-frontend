@@ -1,74 +1,58 @@
-import React, { createContext, useContext, useState, ReactNode } from "react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
 import { weapons as importedWeapons } from "../../data/data";
+import type { Weapon, WeaponsContextProps } from "./interfaces";
 
-interface Weapon {
-  codigo: string;
-  tipoDeArma: string;
-  estado: string;
-  clasificacion: string;
-  propietario: string;
-  nroSerie: string;
-  modelo: string;
-  procedencia: string;
-  calibre: string;
-  marca: string;
-  nroCargadores: string;
-  gestionDeDotacion: string;
-}
-
-interface WeaponsContextProps {
-  weapons: Weapon[];
-  addWeapon: (weapon: Weapon) => void;
-  removeWeapon: (codigo: string) => void;
-  updateWeapon: (weapon: Weapon) => void;
-  getAllWeapons: () => Weapon[];
-  getWeaponByCodigo: (codigo: string) => Weapon | undefined;
-}
-
-const WeaponsContext = createContext<WeaponsContextProps | undefined>(
-  undefined,
-);
+const WeaponsContext = createContext<WeaponsContextProps | undefined>(undefined);
 
 const WeaponsProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [weapons, setWeapons] = useState<Weapon[]>(importedWeapons);
+  const [weapons, setWeapons] = useState<Weapon[]>(() => {
+    const storedWeapons = localStorage.getItem("weapons");
+    return storedWeapons ? JSON.parse(storedWeapons) : importedWeapons;
+  });
+
+  useEffect(() => {
+    localStorage.setItem("weapons", JSON.stringify(weapons));
+  }, [weapons]);
 
   const addWeapon = (weapon: Weapon) => {
-    setWeapons((prevWeapons) => [...prevWeapons, weapon]);
+    setWeapons((prevWeapons) => {
+      if (prevWeapons.some((w) => w.codigo === weapon.codigo)) {
+        throw new Error("Weapon with the same code already exists");
+      }
+      return [...prevWeapons, weapon];
+    });
   };
 
   const removeWeapon = (codigo: string) => {
-    setWeapons((prevWeapons) =>
-      prevWeapons.filter((weapon) => weapon.codigo !== codigo),
-    );
+    setWeapons((prevWeapons) => {
+      const weaponExists = prevWeapons.some((weapon) => weapon.codigo === codigo);
+      if (!weaponExists) {
+        throw new Error("Weapon not found");
+      }
+      return prevWeapons.filter((weapon) => weapon.codigo !== codigo);
+    });
   };
 
   const updateWeapon = (updatedWeapon: Weapon) => {
-    setWeapons((prevWeapons) =>
-      prevWeapons.map((weapon) =>
+    setWeapons((prevWeapons) => {
+      const weaponExists = prevWeapons.some((weapon) => weapon.codigo === updatedWeapon.codigo);
+      if (!weaponExists) {
+        throw new Error("Weapon not found");
+      }
+      return prevWeapons.map((weapon) =>
         weapon.codigo === updatedWeapon.codigo ? updatedWeapon : weapon,
-      ),
-    );
-  };
-
-  const getAllWeapons = (): Weapon[] => {
-    return weapons;
-  };
-
-  const getWeaponByCodigo = (codigo: string): Weapon | undefined => {
-    return weapons.find((weapon) => weapon.codigo === codigo);
+      );
+    });
   };
 
   return (
-    <WeaponsContext.Provider
-      value={{
-        weapons,
-        addWeapon,
-        removeWeapon,
-        updateWeapon,
-        getAllWeapons,
-        getWeaponByCodigo,
-      }}
-    >
+    <WeaponsContext.Provider value={{ weapons, addWeapon, removeWeapon, updateWeapon }}>
       {children}
     </WeaponsContext.Provider>
   );
@@ -76,10 +60,11 @@ const WeaponsProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
 
 const useWeapons = (): WeaponsContextProps => {
   const context = useContext(WeaponsContext);
-  if (context === undefined) {
+  if (!context) {
     throw new Error("useWeapons must be used within a WeaponsProvider");
   }
   return context;
 };
 
 export { WeaponsProvider, useWeapons };
+export type { Weapon, WeaponsContextProps };

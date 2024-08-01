@@ -1,0 +1,30 @@
+.button-icon_style button {
+  background-color: #ff6347;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 25px;
+  width: 25px;
+  margin: 0;
+  padding: 0;
+  transition: background-color 0.3s, transform 0.2s;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.button-icon_style button:hover {
+  background-color: #e5533c;
+  transform: scale(1.05);
+}
+
+.button-icon_style .group .tooltip {
+  background-color: #333;
+  color: #fff;
+  border-radius: 2px;
+  padding: 1px 5px;
+  font-size: 0.875rem;
+  line-height: 1.2;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}

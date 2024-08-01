@@ -8,7 +8,11 @@ import {
   especialidades,
 } from "../../data/selectOptions";
 
-const FormPersonalRegister = ({ formData, handleChange, handleSubmit }) => {
+const roles = ["Administrador", "Encargado", "Personal"];
+const estados = ["Activo", "Inactivo"];
+const inSystemPermissions = ["Sí", "No"];
+
+const FormPersonalEdit = ({ formData, handleChange, handleSubmit }) => {
   const [isConfirmModalOpen, setConfirmModalOpen] = useState(false);
   const [localErrors, setLocalErrors] = useState({});
 
@@ -126,12 +130,33 @@ const FormPersonalRegister = ({ formData, handleChange, handleSubmit }) => {
           onChange={handleChange}
           error={localErrors.apellidoMaterno}
         />
+        <Select
+          id="inSystemPermission"
+          label="Permiso en Sistema"
+          options={inSystemPermissions}
+          value={formData.inSystemPermission}
+          onChange={handleChange}
+        />
+        <Select
+          id="rol"
+          label="Rol"
+          options={roles}
+          value={formData.rol}
+          onChange={handleChange}
+        />
+        <Select
+          id="estado"
+          label="Estado"
+          options={estados}
+          value={formData.estado}
+          onChange={handleChange}
+        />
         <div className="flex justify-end mt-4 col-span-1 md:col-span-2">
           <button
             type="submit"
             className="bg-blue-500 text-white px-4 py-2 rounded"
           >
-            Registrar
+            Actualizar
           </button>
         </div>
       </form>
@@ -142,7 +167,7 @@ const FormPersonalRegister = ({ formData, handleChange, handleSubmit }) => {
           isOpen={isConfirmModalOpen}
           onClose={handleCloseModal}
         >
-          <p>¿Está seguro de que desea registrar esta información?</p>
+          <p>¿Está seguro de que desea actualizar esta información?</p>
           <div className="flex justify-end mt-4">
             <button
               className="bg-gray-300 text-black px-4 py-2 rounded mr-2"
@@ -163,4 +188,4 @@ const FormPersonalRegister = ({ formData, handleChange, handleSubmit }) => {
   );
 };
 
-export default FormPersonalRegister;
+export default FormPersonalEdit;

@@ -19,7 +19,7 @@ const armamentos = [
   "Revolver",
 ];
 
-const FormWeaponRegister = ({ formData, handleChange, handleSubmit }) => {
+const FormWeaponEdit = ({ formData, handleChange, handleSubmit }) => {
   const [isConfirmModalOpen, setConfirmModalOpen] = useState(false);
   const [localErrors, setLocalErrors] = useState({});
   const { users } = useUsers();
@@ -149,7 +149,7 @@ const FormWeaponRegister = ({ formData, handleChange, handleSubmit }) => {
             type="submit"
             className="bg-blue-500 text-white px-4 py-2 rounded"
           >
-            Registrar
+            Actualizar
           </button>
         </div>
       </form>
@@ -160,7 +160,7 @@ const FormWeaponRegister = ({ formData, handleChange, handleSubmit }) => {
           isOpen={isConfirmModalOpen}
           onClose={handleCloseModal}
         >
-          <p>¿Está seguro de que desea registrar esta información?</p>
+          <p>¿Está seguro de que desea actualizar esta información?</p>
           <div className="flex justify-end mt-4">
             <button
               className="bg-gray-300 text-black px-4 py-2 rounded mr-2"
@@ -181,4 +181,4 @@ const FormWeaponRegister = ({ formData, handleChange, handleSubmit }) => {
   );
 };
 
-export default FormWeaponRegister;
+export default FormWeaponEdit;

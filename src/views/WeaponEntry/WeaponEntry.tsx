@@ -1,10 +1,13 @@
 import { useState } from "react";
 import WeaponInfo from "../../components/WeaponInfo/WeaponInfo";
 import Button from "../../components/Button/Button";
-import { weapons, users } from "../../data/data";
-import { useMovements } from "../../contexts/MovementsContext/MovementsContenx";
+import { useUsers } from "../../contexts/UsersContext/UsersContext";
+import { useWeapons } from "../../contexts/WeaponsContext/WeaponsContext";
+import { useMovements } from "../../contexts/MovementsContext/MovementsContext";
 import { findWeaponInMovements } from "../../services/findWeaponInMovements";
 const WeaponEntry = () => {
+  const { weapons } = useWeapons();
+  const { users } = useUsers();
   const { movements, updateMovement } = useMovements();
   const [weaponCode, setWeaponCode] = useState("");
   const [weaponDetails, setWeaponDetails] = useState(null);
@@ -30,6 +33,10 @@ const WeaponEntry = () => {
       ).padStart(2, "0")}`,
     };
     updateMovement(updatedMovement);
+  };
+
+  const findUser = (ci) => {
+    return users.find((user) => user.ci === ci);
   };
 
   return (
@@ -78,19 +85,30 @@ const WeaponEntry = () => {
                   <RowInfo
                     title={"Solicitante"}
                     value={
-                      users.find(
-                        (user) =>
-                          user.ci ===
-                          findWeaponInMovements(weaponCode, movements).movement
-                            ?.solicitante,
-                      )?.militaryRank +
+                      findUser(
+                        findWeaponInMovements(weaponCode, movements).movement
+                          .solicitante,
+                      )?.grado +
                       " " +
-                      users.find(
-                        (user) =>
-                          user.ci ===
-                          findWeaponInMovements(weaponCode, movements).movement
-                            ?.solicitante,
-                      )?.nombre
+                      findUser(
+                        findWeaponInMovements(weaponCode, movements).movement
+                          .solicitante,
+                      )?.especialidad +
+                      " " +
+                      findUser(
+                        findWeaponInMovements(weaponCode, movements).movement
+                          .solicitante,
+                      )?.nombre +
+                      " " +
+                      findUser(
+                        findWeaponInMovements(weaponCode, movements).movement
+                          .solicitante,
+                      )?.apellidoPaterno +
+                      " " +
+                      findUser(
+                        findWeaponInMovements(weaponCode, movements).movement
+                          .solicitante,
+                      )?.apellidoMaterno
                     }
                   />
                   <RowInfo

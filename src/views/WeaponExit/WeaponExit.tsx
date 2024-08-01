@@ -2,33 +2,56 @@ import { useState } from "react";
 import WeaponInfo from "../../components/WeaponInfo/WeaponInfo";
 import ApplicantInfo from "../../components/ApplicantInfo/ApplicantInfo";
 import Button from "../../components/Button/Button";
-import { weapons, users } from "../../data/data";
-import { useMovements } from "../../contexts/MovementsContext/MovementsContenx";
+import Modal from "../../components/Modal/Modal";
+import { useMovements } from "../../contexts/MovementsContext/MovementsContext";
 import { findWeaponInMovements } from "../../services/findWeaponInMovements";
+import { Weapon } from "../../contexts/WeaponsContext/interfaces";
+import { User } from "../../contexts/UsersContext/interfaces";
+import { useUsers } from "../../contexts/UsersContext/UsersContext";
+import { useWeapons } from "../../contexts/WeaponsContext/WeaponsContext";
+
 const WeaponExit = () => {
+  const { weapons } = useWeapons();
+  const { users } = useUsers();
   const { movements, addMovement } = useMovements();
   const [weaponCode, setWeaponCode] = useState("");
-  const [weaponDetails, setWeaponDetails] = useState(null);
+  const [weaponDetails, setWeaponDetails] = useState<Weapon | null>(null);
   const [loading, setLoading] = useState(false);
   const [applicantCI, setApplicantCI] = useState("");
-  const [applicantInformation, setApplicantInformation] = useState(null);
+  const [applicantInformation, setApplicantInformation] = useState<User | null>(
+    null,
+  );
   const [applicantLoading, setApplicantLoading] = useState(false);
+  const [isConfirmModalOpen, setConfirmModalOpen] = useState(false);
+  const [motivo, setMotivo] = useState("");
 
   const fetchWeaponDetails = () => {
     setLoading(true);
-    const details = weapons.find((weapon) => weapon.codigo === weaponCode);
+    const details = weapons.find(
+      (weapon) => weapon.codigo === weaponCode.trim(),
+    );
     setWeaponDetails(details || null);
     setLoading(false);
   };
 
   const fetchApplicantInformation = () => {
     setApplicantLoading(true);
-    const details = users.find((applicant) => applicant.ci === applicantCI);
+    const details = users.find(
+      (applicant) => applicant.ci === applicantCI.trim(),
+    );
     setApplicantInformation(details || null);
     setApplicantLoading(false);
   };
 
   const handleAddMovement = () => {
+    if (weaponDetails && applicantInformation) {
+      setConfirmModalOpen(true);
+    } else {
+      alert("Debe ingresar un arma y un solicitante válidos.");
+    }
+  };
+
+  const confirmAddMovement = () => {
     const newMovement = {
       id: movements.length + 1,
       fechaSalida: `${new Date().getFullYear()}-${String(
@@ -40,11 +63,14 @@ const WeaponExit = () => {
         new Date().getMinutes(),
       ).padStart(2, "0")}`,
       fechaRegreso: "Pendiente",
-      codigo: weaponCode,
-      solicitante: applicantCI,
-      motivo: "Reabastecimiento",
+      codigo: weaponCode.trim(),
+      solicitante: applicantCI.trim(),
+      motivo: motivo.trim(),
+      actaSalida: "No Asignada",
+      actaRegreso: "No Asignada",
     };
     addMovement(newMovement);
+    setConfirmModalOpen(false);
   };
 
   return (
@@ -53,7 +79,7 @@ const WeaponExit = () => {
         <div className="md:w-1/2 p-2">
           <WeaponInfo
             weaponCode={weaponCode}
-            setWeaponCode={setWeaponCode}
+            setWeaponCode={(code) => setWeaponCode(code.trim())}
             fetchWeaponDetails={fetchWeaponDetails}
             weaponDetails={weaponDetails}
             setWeaponDetails={setWeaponDetails}
@@ -65,29 +91,32 @@ const WeaponExit = () => {
               role="alert"
             >
               <span className="font-medium">!</span>
-              {findWeaponInMovements(weaponCode, movements).message}
+              {findWeaponInMovements(weaponCode.trim(), movements).message}
             </div>
           ) : null}
         </div>
         <div className="md:w-1/2 p-2">
           <ApplicantInfo
             applicantCI={applicantCI}
-            setApplicantCI={setApplicantCI}
+            setApplicantCI={(ci) => setApplicantCI(ci.trim())}
             fetchApplicantInformation={fetchApplicantInformation}
             applicantInformation={applicantInformation}
             setApplicantInformation={setApplicantInformation}
             loading={applicantLoading}
+            setMotivo={(motivo) => setMotivo(motivo.trim())}
           />
         </div>
       </div>
 
-      {findWeaponInMovements(weaponCode, movements).isPending === true ? (
+      {findWeaponInMovements(weaponCode.trim(), movements).isPending ===
+      true ? (
         <div className="flex justify-end mt-4 ">
           <Button
             textStyle={
               "bg-gray-300 px-4 py-2 rounded-md cursor-not-allowed opacity-50"
             }
             text={"Registrar Salida"}
+            onClick={"disabled"}
           />
         </div>
       ) : (
@@ -98,6 +127,28 @@ const WeaponExit = () => {
             onClick={handleAddMovement}
           />
         </div>
+      )}
+
+      {isConfirmModalOpen && (
+        <Modal
+          isOpen={isConfirmModalOpen}
+          onClose={() => setConfirmModalOpen(false)}
+          title="Confirmación"
+        >
+          <p>¿Está seguro de que desea registrar la salida del arma?</p>
+          <div className="flex justify-end mt-4">
+            <Button
+              text="Cancelar"
+              textStyle="bg-gray-300 px-4 py-2 rounded-md mr-2"
+              onClick={() => setConfirmModalOpen(false)}
+            />
+            <Button
+              text="Confirmar"
+              textStyle="bg-blue-500 text-white px-4 py-2 rounded-md"
+              onClick={confirmAddMovement}
+            />
+          </div>
+        </Modal>
       )}
     </>
   );
