@@ -76,7 +76,7 @@ const Layout = () => {
               <Outlet />
             </div>
           </div>
-          <Footer />
+          {/* <Footer /> */}
         </main>
       </div>
     </>
