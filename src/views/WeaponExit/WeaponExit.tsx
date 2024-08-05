@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import WeaponInfo from "../../components/WeaponInfo/WeaponInfo";
 import ApplicantInfo from "../../components/ApplicantInfo/ApplicantInfo";
 import Button from "../../components/Button/Button";
@@ -9,6 +9,9 @@ import { Weapon } from "../../contexts/WeaponsContext/interfaces";
 import { User } from "../../contexts/UsersContext/interfaces";
 import { useUsers } from "../../contexts/UsersContext/UsersContext";
 import { useWeapons } from "../../contexts/WeaponsContext/WeaponsContext";
+import io from "socket.io-client";
+
+const socket = io("http://192.168.1.9:3000"); // Reemplaza con la IP correcta de tu servidor
 
 const WeaponExit = () => {
   const { weapons } = useWeapons();
@@ -25,16 +28,27 @@ const WeaponExit = () => {
   const [isConfirmModalOpen, setConfirmModalOpen] = useState(false);
   const [motivo, setMotivo] = useState("");
 
-  const fetchWeaponDetails = () => {
+  useEffect(() => {
+    socket.on("rfid", (code) => {
+      setWeaponCode(code.trim());
+      fetchWeaponDetails(code.trim());
+    });
+
+    return () => {
+      socket.off("rfid");
+    };
+  }, []);
+
+  const fetchWeaponDetails = (code) => {
+    if (!code) return;
     setLoading(true);
-    const details = weapons.find(
-      (weapon) => weapon.codigo === weaponCode.trim(),
-    );
+    const details = weapons.find((weapon) => weapon.codigo === code.trim());
     setWeaponDetails(details || null);
     setLoading(false);
   };
 
   const fetchApplicantInformation = () => {
+    if (!applicantCI) return;
     setApplicantLoading(true);
     const details = users.find(
       (applicant) => applicant.ci === applicantCI.trim(),
@@ -87,7 +101,7 @@ const WeaponExit = () => {
           />
           {weaponCode.length >= 7 ? (
             <div
-              className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50  "
+              className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50"
               role="alert"
             >
               <span className="font-medium">!</span>

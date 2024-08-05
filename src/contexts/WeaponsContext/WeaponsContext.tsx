@@ -7,52 +7,104 @@ import React, {
 } from "react";
 import { weapons as importedWeapons } from "../../data/data";
 import type { Weapon, WeaponsContextProps } from "./interfaces";
-
-const WeaponsContext = createContext<WeaponsContextProps | undefined>(undefined);
+import {
+  handleEncryptJSON,
+  handleDecryptObjects,
+  handleEncryptObjects,
+} from "../../utils/encryptionUtils";
+const WeaponsContext = createContext<WeaponsContextProps | undefined>(
+  undefined,
+);
 
 const WeaponsProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [weapons, setWeapons] = useState<Weapon[]>(() => {
-    const storedWeapons = localStorage.getItem("weapons");
-    return storedWeapons ? JSON.parse(storedWeapons) : importedWeapons;
-  });
+  const [weapons, setWeapons] = useState<Weapon[]>([]);
+  const [encryptedWeapons, setEncryptedWeapons] = useState<Weapon[]>([]);
+  const [error, setError] = useState<string>("");
 
   useEffect(() => {
-    localStorage.setItem("weapons", JSON.stringify(weapons));
-  }, [weapons]);
-
-  const addWeapon = (weapon: Weapon) => {
-    setWeapons((prevWeapons) => {
-      if (prevWeapons.some((w) => w.codigo === weapon.codigo)) {
-        throw new Error("Weapon with the same code already exists");
-      }
-      return [...prevWeapons, weapon];
-    });
-  };
-
-  const removeWeapon = (codigo: string) => {
-    setWeapons((prevWeapons) => {
-      const weaponExists = prevWeapons.some((weapon) => weapon.codigo === codigo);
-      if (!weaponExists) {
-        throw new Error("Weapon not found");
-      }
-      return prevWeapons.filter((weapon) => weapon.codigo !== codigo);
-    });
-  };
-
-  const updateWeapon = (updatedWeapon: Weapon) => {
-    setWeapons((prevWeapons) => {
-      const weaponExists = prevWeapons.some((weapon) => weapon.codigo === updatedWeapon.codigo);
-      if (!weaponExists) {
-        throw new Error("Weapon not found");
-      }
-      return prevWeapons.map((weapon) =>
-        weapon.codigo === updatedWeapon.codigo ? updatedWeapon : weapon,
+    const storedWeapons = localStorage.getItem("weapons");
+    const itemExists = storedWeapons !== null ? true : false;
+    if (itemExists) {
+      setEncryptedWeapons(JSON.parse(storedWeapons) as Weapon[]);
+      handleDecryptObjects(
+        storedWeapons,
+        (decryptedData) => setWeapons(JSON.parse(decryptedData) as Weapon[]),
+        setError,
       );
-    });
+    } else {
+      handleEncryptObjects(
+        JSON.stringify(importedWeapons),
+        (encryptedData) => {
+          handleDecryptObjects(
+            encryptedData,
+            (decryptedData) =>
+              setWeapons(JSON.parse(decryptedData) as Weapon[]),
+            setError,
+          );
+          localStorage.setItem("weapons", encryptedData);
+          setEncryptedWeapons(JSON.parse(encryptedData) as Weapon[]);
+        },
+        setError,
+      );
+    }
+  }, []);
+
+  useEffect(() => {
+    if (weapons.length > 0) {
+      localStorage.setItem("weapons", JSON.stringify(encryptedWeapons));
+      handleDecryptObjects(
+        localStorage.getItem("weapons"),
+        (decryptedData) => setWeapons(JSON.parse(decryptedData) as Weapon[]),
+        setError,
+      );
+    }
+  }, [encryptedWeapons]);
+
+  const addWeapon = async (weapon: Weapon) => {
+    try {
+      await handleEncryptJSON(
+        JSON.stringify(weapon),
+        (encryptedData) => {
+          setEncryptedWeapons((prevWeapons) => {
+            if (prevWeapons.some((w) => w.codigo === weapon.codigo)) {
+              throw new Error("Weapon already exists");
+            }
+            const encryptedWeapon = JSON.parse(encryptedData);
+            return [...prevWeapons, encryptedWeapon];
+          });
+        },
+        setError,
+      );
+    } catch (error) {
+      setError(`Error adding weapon: ${error}`);
+    }
+  };
+  const updateWeapon = async (updateWeapon: Weapon) => {
+    handleDecryptObjects(
+      localStorage.getItem("weapons"),
+      (decryptedData) => {
+        const decryptedWeapons = JSON.parse(decryptedData) as Weapon[];
+        const updatedWeapons = decryptedWeapons.map((weapon) => {
+          if (weapon.codigo === updateWeapon.codigo) {
+            return updateWeapon;
+          }
+          return weapon;
+        });
+        setWeapons(updatedWeapons);
+        handleEncryptObjects(
+          JSON.stringify(updatedWeapons),
+          (encryptedData) => {
+            setEncryptedWeapons(JSON.parse(encryptedData) as Weapon[]);
+          },
+          setError,
+        );
+      },
+      setError,
+    );
   };
 
   return (
-    <WeaponsContext.Provider value={{ weapons, addWeapon, removeWeapon, updateWeapon }}>
+    <WeaponsContext.Provider value={{ weapons, addWeapon, updateWeapon }}>
       {children}
     </WeaponsContext.Provider>
   );

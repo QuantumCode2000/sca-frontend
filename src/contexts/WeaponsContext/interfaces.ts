@@ -14,7 +14,7 @@ interface Weapon {
 interface WeaponsContextProps {
   weapons: Weapon[];
   addWeapon: (weapon: Weapon) => void;
-  removeWeapon: (codigo: string) => void;
+  // removeWeapon: (codigo: string) => void;
   updateWeapon: (weapon: Weapon) => void;
 }
 

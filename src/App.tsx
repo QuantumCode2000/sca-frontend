@@ -10,6 +10,7 @@ import WeaponRegister from "./views/WeaponRegister/WeaponRegister";
 import PersonalRegister from "./views/PersonalRegister/PersonalRegister";
 import Example from "./views/Example/Example";
 import Actas from "./views/Actas/Actas";
+import InsertPrivateKey from "./pages/InsertPrivateKey/InsertPrivateKey";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -56,6 +57,11 @@ const router = createBrowserRouter([
   {
     path: "login",
     element: <Login />,
+  },
+  {
+    path: "/",
+    element: <InsertPrivateKey />,
+    index: true,
   },
 ]);
 

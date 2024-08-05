@@ -7,59 +7,121 @@ import React, {
 } from "react";
 import { movimientos as importedMovements } from "../../data/movements";
 import type { Movement, MovementsContextProps } from "./interfaces";
+import {
+  handleEncryptJSON,
+  handleDecryptObjects,
+  handleEncryptObjects,
+} from "../../utils/encryptionUtils";
 
 const MovementsContext = createContext<MovementsContextProps | undefined>(
   undefined,
 );
 
 const MovementsProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [movements, setMovements] = useState<Movement[]>(() => {
-    const storedMovements = localStorage.getItem("movements");
-    return storedMovements ? JSON.parse(storedMovements) : importedMovements;
-  });
+  const [movements, setMovements] = useState<Movement[]>([]);
+  const [encryptedMovements, setEncryptedMovements] = useState<Movement[]>([]);
+  const [error, setError] = useState<string>("");
 
   useEffect(() => {
-    localStorage.setItem("movements", JSON.stringify(movements));
-  }, [movements]);
+    const storedMovements = localStorage.getItem("movements");
+    const itemExists = storedMovements !== null ? true : false;
+    if (itemExists) {
+      setEncryptedMovements(JSON.parse(storedMovements) as Movement[]);
+      handleDecryptObjects(
+        storedMovements,
+        (decryptedData) =>
+          setMovements(JSON.parse(decryptedData) as Movement[]),
+        setError,
+      );
+    } else {
+      handleEncryptObjects(
+        JSON.stringify(importedMovements),
+        (encryptedData) => {
+          handleDecryptObjects(
+            encryptedData,
+            (decryptedData) =>
+              setMovements(JSON.parse(decryptedData) as Movement[]),
+            setError,
+          );
+          localStorage.setItem("movements", encryptedData);
+          setEncryptedMovements(JSON.parse(encryptedData) as Movement[]);
+        },
+        setError,
+      );
+    }
+  }, []);
 
-  const addMovement = (movement: Movement) => {
-    setMovements((prevMovements) => {
-      if (prevMovements.some((m) => m.id === movement.id)) {
-        throw new Error("Movement with the same ID already exists");
-      }
-      return [...prevMovements, movement];
-    });
+  useEffect(() => {
+    if (movements.length > 0) {
+      localStorage.setItem("movements", JSON.stringify(encryptedMovements));
+      handleDecryptObjects(
+        localStorage.getItem("movements"),
+        (decryptedData) =>
+          setMovements(JSON.parse(decryptedData) as Movement[]),
+        setError,
+      );
+    }
+  }, [encryptedMovements]);
+
+  const addMovement = async (movement: Movement) => {
+    try {
+      await handleEncryptJSON(
+        JSON.stringify(movement),
+        (encryptedData) => {
+          setEncryptedMovements((prevMovements) => {
+            if (prevMovements.some((m) => m.id === movement.id)) {
+              throw new Error("Movement already exists");
+            }
+            const encryptedMovement = JSON.parse(encryptedData);
+            return [...prevMovements, encryptedMovement];
+          });
+        },
+        setError,
+      );
+    } catch (error) {
+      setError(`Error adding movement: ${error}`);
+    }
   };
 
-  const removeMovement = (id: number) => {
-    setMovements((prevMovements) => {
-      const movementExists = prevMovements.some(
-        (movement) => movement.id === id,
-      );
-      if (!movementExists) {
-        throw new Error("Movement not found");
-      }
-      return prevMovements.filter((movement) => movement.id !== id);
-    });
-  };
+  // const removeMovement = (id: number) => {
+  //   setMovements((prevMovements) => {
+  //     const movementExists = prevMovements.some(
+  //       (movement) => movement.id === id,
+  //     );
+  //     if (!movementExists) {
+  //       throw new Error("Movement not found");
+  //     }
+  //     return prevMovements.filter((movement) => movement.id !== id);
+  //   });
+  // };
 
-  const updateMovement = (updatedMovement: Movement) => {
-    setMovements((prevMovements) => {
-      const movementExists = prevMovements.some(
-        (movement) => movement.id === updatedMovement.id,
-      );
-      if (!movementExists) {
-        throw new Error("Movement not found");
-      }
-      return prevMovements.map((movement) =>
-        movement.id === updatedMovement.id ? updatedMovement : movement,
-      );
-    });
+  const updateMovement = async (updatedMovement: Movement) => {
+    handleDecryptObjects(
+      localStorage.getItem("movements"),
+      (decryptedData) => {
+        const decryptedMovements = JSON.parse(decryptedData) as Movement[];
+        const updatedMovements = decryptedMovements.map((movement) => {
+          if (movement.id === updatedMovement.id) {
+            return updatedMovement;
+          }
+          return movement;
+        });
+        setMovements(updatedMovements);
+        handleEncryptObjects(
+          JSON.stringify(updatedMovements),
+          (encryptedData) => {
+            setEncryptedMovements(JSON.parse(encryptedData) as Movement[]);
+          },
+          setError,
+        );
+      },
+      setError,
+    );
   };
 
   return (
     <MovementsContext.Provider
-      value={{ movements, addMovement, removeMovement, updateMovement }}
+      value={{ movements, addMovement, updateMovement }}
     >
       {children}
     </MovementsContext.Provider>

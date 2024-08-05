@@ -9,8 +9,8 @@ function WeaponInfo({
   loading,
 }) {
   useEffect(() => {
-    if (weaponCode.length === 10) {
-      fetchWeaponDetails();
+    if (weaponCode.length === 9) {
+      fetchWeaponDetails(weaponCode);
     } else {
       setWeaponDetails(null);
     }
@@ -22,7 +22,7 @@ function WeaponInfo({
       <input
         type="text"
         value={weaponCode}
-        onChange={(e) => setWeaponCode(e.target.value)}
+        onChange={(e) => setWeaponCode(e.target.value.trim())}
         placeholder="Código del Arma"
         className="w-full px-3 py-2 mb-4 border border-gray-300 rounded"
       />
