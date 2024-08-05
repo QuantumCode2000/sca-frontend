@@ -7,17 +7,33 @@ import {
   grados,
   especialidades,
 } from "../../data/selectOptions";
+import type { User } from "../../contexts/UsersContext/interfaces";
 
 const roles = ["Administrador", "Encargado", "Personal"];
 const estados = ["Activo", "Inactivo"];
 const inSystemPermissions = ["Sí", "No"];
 
-const FormPersonalEdit = ({ formData, handleChange, handleSubmit }) => {
-  const [isConfirmModalOpen, setConfirmModalOpen] = useState(false);
-  const [localErrors, setLocalErrors] = useState({});
+interface FormPersonalRegisterProps {
+  formData: User;
+  handleChange: (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+  ) => void;
+  handleSubmit: () => void;
+}
 
-  const validateForm = () => {
-    const newErrors = {};
+const FormPersonalEdit: React.FC<FormPersonalRegisterProps> = ({
+  formData,
+  handleChange,
+  handleSubmit,
+}) => {
+  const [isConfirmModalOpen, setConfirmModalOpen] = useState(false);
+  const [localErrors, setLocalErrors] = useState<Partial<User>>({});
+  const [showPasswordFields, setShowPasswordFields] = useState(false);
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
+  const validateForm = (): Partial<User> => {
+    const newErrors: Partial<User> = {};
     if (!formData.ci) newErrors.ci = "CI es requerido";
     if (!formData.extension) newErrors.extension = "Extensión es requerida";
     if (!formData.cm) newErrors.cm = "Carnet Militar es requerido";
@@ -30,6 +46,15 @@ const FormPersonalEdit = ({ formData, handleChange, handleSubmit }) => {
       newErrors.apellidoPaterno = "Apellido Paterno es requerido";
     if (!formData.apellidoMaterno)
       newErrors.apellidoMaterno = "Apellido Materno es requerido";
+
+    if (showPasswordFields) {
+      if (!password) newErrors.password = "Nueva contraseña es requerida";
+      if (!confirmPassword)
+        newErrors.confirmPassword = "Confirmar contraseña es requerido";
+      if (password !== confirmPassword)
+        newErrors.passwordMismatch = "Las contraseñas no coinciden";
+    }
+
     return newErrors;
   };
 
@@ -45,6 +70,9 @@ const FormPersonalEdit = ({ formData, handleChange, handleSubmit }) => {
 
   const handleConfirmSubmit = () => {
     setConfirmModalOpen(false);
+    if (showPasswordFields) {
+      handleChange({ target: { id: "password", value: password } });
+    }
     handleSubmit();
   };
 
@@ -64,7 +92,7 @@ const FormPersonalEdit = ({ formData, handleChange, handleSubmit }) => {
           placeholder="Cédula de Identidad"
           value={formData.ci}
           onChange={handleChange}
-          error={localErrors.ci}
+          errorMessage={localErrors.ci}
         />
         <Select
           id="extension"
@@ -72,7 +100,7 @@ const FormPersonalEdit = ({ formData, handleChange, handleSubmit }) => {
           options={departamentos}
           value={formData.extension}
           onChange={handleChange}
-          error={localErrors.extension}
+          errorMessage={localErrors.extension}
         />
         <Input
           id="cm"
@@ -80,7 +108,7 @@ const FormPersonalEdit = ({ formData, handleChange, handleSubmit }) => {
           placeholder="Carnet Militar"
           value={formData.cm}
           onChange={handleChange}
-          error={localErrors.cm}
+          errorMessage={localErrors.cm}
         />
         <Input
           id="correo"
@@ -88,7 +116,7 @@ const FormPersonalEdit = ({ formData, handleChange, handleSubmit }) => {
           placeholder="Correo Electrónico"
           value={formData.correo}
           onChange={handleChange}
-          error={localErrors.correo}
+          errorMessage={localErrors.correo}
         />
         <Select
           id="grado"
@@ -96,7 +124,7 @@ const FormPersonalEdit = ({ formData, handleChange, handleSubmit }) => {
           options={grados}
           value={formData.grado}
           onChange={handleChange}
-          error={localErrors.grado}
+          errorMessage={localErrors.grado}
         />
         <Select
           id="especialidad"
@@ -104,7 +132,7 @@ const FormPersonalEdit = ({ formData, handleChange, handleSubmit }) => {
           options={especialidades}
           value={formData.especialidad}
           onChange={handleChange}
-          error={localErrors.especialidad}
+          errorMessage={localErrors.especialidad}
         />
         <Input
           id="nombre"
@@ -112,7 +140,7 @@ const FormPersonalEdit = ({ formData, handleChange, handleSubmit }) => {
           placeholder="Nombre"
           value={formData.nombre}
           onChange={handleChange}
-          error={localErrors.nombre}
+          errorMessage={localErrors.nombre}
         />
         <Input
           id="apellidoPaterno"
@@ -120,7 +148,7 @@ const FormPersonalEdit = ({ formData, handleChange, handleSubmit }) => {
           placeholder="Apellido Paterno"
           value={formData.apellidoPaterno}
           onChange={handleChange}
-          error={localErrors.apellidoPaterno}
+          errorMessage={localErrors.apellidoPaterno}
         />
         <Input
           id="apellidoMaterno"
@@ -128,7 +156,7 @@ const FormPersonalEdit = ({ formData, handleChange, handleSubmit }) => {
           placeholder="Apellido Materno"
           value={formData.apellidoMaterno}
           onChange={handleChange}
-          error={localErrors.apellidoMaterno}
+          errorMessage={localErrors.apellidoMaterno}
         />
         <Select
           id="inSystemPermission"
@@ -151,6 +179,43 @@ const FormPersonalEdit = ({ formData, handleChange, handleSubmit }) => {
           value={formData.estado}
           onChange={handleChange}
         />
+        <div className="flex justify-end col-span-1 md:col-span-2">
+          <button
+            type="button"
+            className="bg-gray-500 text-white px-4 py-2 rounded mt-2"
+            onClick={() => setShowPasswordFields(!showPasswordFields)}
+          >
+            {showPasswordFields ? "Cancelar" : "Modificar Contraseña"}
+          </button>
+        </div>
+        {showPasswordFields && (
+          <>
+            <Input
+              id="password"
+              label="Nueva Contraseña"
+              placeholder="Nueva Contraseña"
+              value={
+                formData.password ||
+                (formData.password === "" ? "" : formData.password)
+              }
+              onChange={handleChange}
+              errorMessage={localErrors.password}
+            />
+            <Input
+              id="confirmPassword"
+              label="Confirmar Contraseña"
+              placeholder="Confirmar Contraseña"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              errorMessage={localErrors.confirmPassword}
+            />
+            {localErrors.passwordMismatch && (
+              <p className="text-red-500 col-span-1 md:col-span-2">
+                {localErrors.passwordMismatch}
+              </p>
+            )}
+          </>
+        )}
         <div className="flex justify-end mt-4 col-span-1 md:col-span-2">
           <button
             type="submit"

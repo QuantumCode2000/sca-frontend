@@ -1,4 +1,4 @@
-const CustomFilter = ({
+  const CustomFilter = ({
   columns,
   selectedColumn,
   filterText,

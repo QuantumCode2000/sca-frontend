@@ -27,15 +27,17 @@ const firstState: FormData = {
   inSystemPermission: "No",
   rol: "Personal",
   estado: "Activo",
+  password: "",
 };
 
 const PersonalRegister: React.FC = () => {
+  const { users, addUser, updateUser } = useUsers();
+
   const [isModalOpen, setOpenModal] = useState<boolean>(false);
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [isViewMoreOpen, setViewMoreOpen] = useState<boolean>(false);
   const [formData, setFormData] = useState<FormData>(firstState);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
-  const { users, addUser, updateUser } = useUsers();
 
   const closeModal = () => {
     setOpenModal(false);
@@ -163,11 +165,7 @@ const PersonalRegister: React.FC = () => {
         />
       </Content>
       <div className="flex justify-end mt-4">
-        <Button
-          text={"Registrar Personal"}
-          onClick={openModal}
-          textStyle={""}
-        />
+        <Button text={"Registrar Personal"} onClick={openModal} />
       </div>
       <Modal
         title={isEdit ? "Editar Personal" : "Registrar Personal"}

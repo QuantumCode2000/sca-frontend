@@ -7,13 +7,26 @@ import {
   grados,
   especialidades,
 } from "../../data/selectOptions";
+import type { User } from "../../contexts/UsersContext/interfaces";
 
-const FormPersonalRegister = ({ formData, handleChange, handleSubmit }) => {
+interface FormPersonalRegisterProps {
+  formData: User;
+  handleChange: (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+  ) => void;
+  handleSubmit: () => void;
+}
+
+const FormPersonalRegister: React.FC<FormPersonalRegisterProps> = ({
+  formData,
+  handleChange,
+  handleSubmit,
+}) => {
   const [isConfirmModalOpen, setConfirmModalOpen] = useState(false);
-  const [localErrors, setLocalErrors] = useState({});
+  const [localErrors, setLocalErrors] = useState<Partial<User>>({});
 
-  const validateForm = () => {
-    const newErrors = {};
+  const validateForm = (): Partial<User> => {
+    const newErrors: Partial<User> = {};
     if (!formData.ci) newErrors.ci = "CI es requerido";
     if (!formData.extension) newErrors.extension = "Extensión es requerida";
     if (!formData.cm) newErrors.cm = "Carnet Militar es requerido";
@@ -29,7 +42,7 @@ const FormPersonalRegister = ({ formData, handleChange, handleSubmit }) => {
     return newErrors;
   };
 
-  const handleConfirm = (e) => {
+  const handleConfirm = (e: React.FormEvent) => {
     e.preventDefault();
     const errors = validateForm();
     if (Object.keys(errors).length === 0) {
@@ -60,7 +73,7 @@ const FormPersonalRegister = ({ formData, handleChange, handleSubmit }) => {
           placeholder="Cédula de Identidad"
           value={formData.ci}
           onChange={handleChange}
-          error={localErrors.ci}
+          errorMessage={localErrors.ci}
         />
         <Select
           id="extension"
@@ -68,7 +81,7 @@ const FormPersonalRegister = ({ formData, handleChange, handleSubmit }) => {
           options={departamentos}
           value={formData.extension}
           onChange={handleChange}
-          error={localErrors.extension}
+          errorMessage={localErrors.extension}
         />
         <Input
           id="cm"
@@ -76,7 +89,7 @@ const FormPersonalRegister = ({ formData, handleChange, handleSubmit }) => {
           placeholder="Carnet Militar"
           value={formData.cm}
           onChange={handleChange}
-          error={localErrors.cm}
+          errorMessage={localErrors.cm}
         />
         <Input
           id="correo"
@@ -84,7 +97,7 @@ const FormPersonalRegister = ({ formData, handleChange, handleSubmit }) => {
           placeholder="Correo Electrónico"
           value={formData.correo}
           onChange={handleChange}
-          error={localErrors.correo}
+          errorMessage={localErrors.correo}
         />
         <Select
           id="grado"
@@ -92,7 +105,7 @@ const FormPersonalRegister = ({ formData, handleChange, handleSubmit }) => {
           options={grados}
           value={formData.grado}
           onChange={handleChange}
-          error={localErrors.grado}
+          errorMessage={localErrors.grado}
         />
         <Select
           id="especialidad"
@@ -100,15 +113,16 @@ const FormPersonalRegister = ({ formData, handleChange, handleSubmit }) => {
           options={especialidades}
           value={formData.especialidad}
           onChange={handleChange}
-          error={localErrors.especialidad}
+          errorMessage={localErrors.especialidad}
         />
+
         <Input
           id="nombre"
           label="Nombre"
           placeholder="Nombre"
           value={formData.nombre}
           onChange={handleChange}
-          error={localErrors.nombre}
+          errorMessage={localErrors.nombre}
         />
         <Input
           id="apellidoPaterno"
@@ -116,7 +130,7 @@ const FormPersonalRegister = ({ formData, handleChange, handleSubmit }) => {
           placeholder="Apellido Paterno"
           value={formData.apellidoPaterno}
           onChange={handleChange}
-          error={localErrors.apellidoPaterno}
+          errorMessage={localErrors.apellidoPaterno}
         />
         <Input
           id="apellidoMaterno"
@@ -124,7 +138,7 @@ const FormPersonalRegister = ({ formData, handleChange, handleSubmit }) => {
           placeholder="Apellido Materno"
           value={formData.apellidoMaterno}
           onChange={handleChange}
-          error={localErrors.apellidoMaterno}
+          errorMessage={localErrors.apellidoMaterno}
         />
         <div className="flex justify-end mt-4 col-span-1 md:col-span-2">
           <button

@@ -47,6 +47,10 @@ const router = createBrowserRouter([
         path: "actas",
         element: <Actas />,
       },
+      {
+        path: "example",
+        element: <Example />,
+      },
     ],
   },
   {

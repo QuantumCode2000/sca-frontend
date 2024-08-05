@@ -1,15 +1,17 @@
 const Input = ({
   id,
   label,
-  type,
+  type = "text",
   placeholder,
   value,
   onChange,
   disabled = false,
-  error = false,
+  errorMessage = "",
   helperText = "",
   ...props
 }) => {
+  const hasError = !!errorMessage;
+
   return (
     <div className="mb-4">
       {label && (
@@ -25,7 +27,7 @@ const Input = ({
         id={id}
         aria-describedby={`${id}-helper-text`}
         className={`bg-gray-50 border ${
-          error ? "border-red-500" : "border-gray-300"
+          hasError ? "border-red-500" : "border-gray-300"
         } text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5`}
         placeholder={placeholder}
         value={value}
@@ -38,7 +40,7 @@ const Input = ({
           {helperText}
         </p>
       )}
-      {error && <p className="mt-1 text-sm text-red-500">{error}</p>}
+      {hasError && <p className="mt-1 text-sm text-red-500">{errorMessage}</p>}
     </div>
   );
 };

@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect } from "react";
 
 const Select = ({
@@ -8,7 +7,7 @@ const Select = ({
   value,
   onChange,
   disabled = false,
-  error = false,
+  errorMessage = "",
   helperText = "",
   isMulti = false,
   ...props
@@ -85,7 +84,7 @@ const Select = ({
       )}
       <div
         className={`bg-gray-50 border ${
-          error ? "border-red-500" : "border-gray-300"
+          errorMessage ? "border-red-500" : "border-gray-300"
         } text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-pointer`}
         onClick={toggleDropdown}
       >
@@ -148,7 +147,9 @@ const Select = ({
           {helperText}
         </p>
       )}
-      {error && <p className="mt-1 text-sm text-red-500">{error}</p>}
+      {errorMessage && (
+        <p className="mt-1 text-sm text-red-500">{errorMessage}</p>
+      )}
     </div>
   );
 };

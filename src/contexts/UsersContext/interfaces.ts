@@ -11,6 +11,7 @@ interface User {
   inSystemPermission: string;
   rol: string;
   estado: string;
+  password: string;
 }
 
 interface UsersContextProps {
