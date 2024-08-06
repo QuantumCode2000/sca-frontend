@@ -10,8 +10,7 @@ import { User } from "../../contexts/UsersContext/interfaces";
 import { useUsers } from "../../contexts/UsersContext/UsersContext";
 import { useWeapons } from "../../contexts/WeaponsContext/WeaponsContext";
 import io from "socket.io-client";
-
-const socket = io("http://192.168.1.9:3000"); // Reemplaza con la IP correcta de tu servidor
+const socket = io(process.env.ROUTE_SOCKETIO); // Reemplaza con la IP correcta de tu servidor
 
 const WeaponExit = () => {
   const { weapons } = useWeapons();
