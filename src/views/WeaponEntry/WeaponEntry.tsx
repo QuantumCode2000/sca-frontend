@@ -205,7 +205,7 @@ import { useMovements } from "../../contexts/MovementsContext/MovementsContext";
 import { findWeaponInMovements } from "../../services/findWeaponInMovements";
 import io from "socket.io-client";
 
-const socket = io(process.env.ROUTE_SOCKETIO); // Reemplaza con la IP correcta de tu servidor
+const socket = io(import.meta.env.VITE_ROUTE_SOCKETIO); // Reemplaza con la IP correcta de tu servidor
 
 const WeaponEntry = () => {
   const { weapons, updateWeapon } = useWeapons();
