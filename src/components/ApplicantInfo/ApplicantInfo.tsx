@@ -10,7 +10,7 @@ function ApplicantInfo({
   setMotivo,
 }) {
   useEffect(() => {
-    if (applicantCI.length >= 7) {
+    if (applicantCI.length >= 5) {
       fetchApplicantInformation();
     } else {
       setApplicantInformation(null);
