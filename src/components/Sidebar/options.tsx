@@ -34,10 +34,15 @@ const options = [
         icon: <FaBuildingFlag />,
         text: "Registro Armas",
       },
+      // {
+      //   to: "/actas",
+      //   icon: <FaBuildingFlag />,
+      //   text: "Actas",
+      // },
       {
-        to: "/actas",
+        to: "/extraer-datos",
         icon: <FaBuildingFlag />,
-        text: "Actas",
+        text: "Extraer Datos",
       },
     ],
   },

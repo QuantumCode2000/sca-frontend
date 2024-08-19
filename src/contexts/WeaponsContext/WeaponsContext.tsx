@@ -79,6 +79,8 @@ const WeaponsProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
       setError(`Error adding weapon: ${error}`);
     }
   };
+
+  
   const updateWeapon = async (updateWeapon: Weapon) => {
     handleDecryptObjects(
       localStorage.getItem("weapons"),

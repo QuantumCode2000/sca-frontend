@@ -1,5 +1,5 @@
 interface Movement {
-  id: number;
+  id: string;
   fechaSalida: string;
   fechaRegreso: string;
   codigo: string;

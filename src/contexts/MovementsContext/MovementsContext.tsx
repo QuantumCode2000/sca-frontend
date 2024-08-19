@@ -64,6 +64,7 @@ const MovementsProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   }, [encryptedMovements]);
 
   const addMovement = async (movement: Movement) => {
+    console.log(movement);
     try {
       await handleEncryptJSON(
         JSON.stringify(movement),

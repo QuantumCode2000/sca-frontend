@@ -9,8 +9,10 @@ import Login from "./pages/Login/Login";
 import WeaponRegister from "./views/WeaponRegister/WeaponRegister";
 import PersonalRegister from "./views/PersonalRegister/PersonalRegister";
 import Example from "./views/Example/Example";
+
 import Actas from "./views/Actas/Actas";
 import InsertPrivateKey from "./pages/InsertPrivateKey/InsertPrivateKey";
+import ExtraerDatos from "./views/ExtraerDatos/ExtraerDatos";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -49,8 +51,8 @@ const router = createBrowserRouter([
         element: <Actas />,
       },
       {
-        path: "example",
-        element: <Example />,
+        path: "extraer-datos",
+        element: <ExtraerDatos />,
       },
     ],
   },

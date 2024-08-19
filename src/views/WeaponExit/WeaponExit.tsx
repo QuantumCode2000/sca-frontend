@@ -66,7 +66,7 @@ const WeaponExit = () => {
 
   const confirmAddMovement = () => {
     const newMovement = {
-      id: movements.length + 1,
+      id: String(movements.length + 1),
       fechaSalida: `${new Date().getFullYear()}-${String(
         new Date().getMonth() + 1,
       ).padStart(2, "0")}-${String(new Date().getDate()).padStart(
@@ -82,6 +82,7 @@ const WeaponExit = () => {
       actaSalida: "No Asignada",
       actaRegreso: "No Asignada",
     };
+    console.log(newMovement);
     addMovement(newMovement);
     setConfirmModalOpen(false);
   };

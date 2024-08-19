@@ -3,7 +3,9 @@ import axios from "axios";
 
 const ENCRYPTION_API_URL = "http://127.0.0.1:8000";
 
+
 export const handleEncryptJSON = async (jsonInput, callback, setError) => {
+  console.log(jsonInput);
   if (jsonInput) {
     try {
       setError("");
