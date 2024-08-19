@@ -9,7 +9,7 @@ function WeaponInfo({
   loading,
 }) {
   useEffect(() => {
-    if (weaponCode.length >= 9) {
+    if (weaponCode.length >= 5) {
       fetchWeaponDetails(weaponCode);
     } else {
       setWeaponDetails(null);
