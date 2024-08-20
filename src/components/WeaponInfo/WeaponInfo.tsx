@@ -1,10 +1,10 @@
-import { useEffect } from "react";
+  import { useEffect } from "react";
 
-function WeaponInfo({
-  weaponCode,
-  setWeaponCode,
-  fetchWeaponDetails,
-  weaponDetails,
+  function WeaponInfo({
+    weaponCode,
+    setWeaponCode,
+    fetchWeaponDetails,
+    weaponDetails,
   setWeaponDetails,
   loading,
 }) {

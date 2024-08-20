@@ -1,14 +1,14 @@
 interface Weapon {
-  codigo: string;
-  nroarma: string;
-  estado: string;
-  clasification: string;
-  propietario: string;
-  modelo: string;
-  calibre: string;
-  observations: string;
-  industria: string;
-  armamento: string;
+    codigo: string;
+    nroarma: string;
+    estado: string;
+    clasification: string;
+    propietario: string;
+    modelo: string;
+    calibre: string;
+    observations: string;
+    industria: string;
+    armamento: string;
 }
 
 interface WeaponsContextProps {

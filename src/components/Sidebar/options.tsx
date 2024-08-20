@@ -39,6 +39,16 @@ const options = [
       //   icon: <FaBuildingFlag />,
       //   text: "Actas",
       // },
+    ],
+  },
+  {
+    text: "Reportes",
+    options: [
+      {
+        to: "/reportes",
+        icon: <FaBuildingFlag />,
+        text: "Reportes",
+      },
       {
         to: "/extraer-datos",
         icon: <FaBuildingFlag />,

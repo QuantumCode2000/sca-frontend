@@ -54,6 +54,10 @@ const router = createBrowserRouter([
         path: "extraer-datos",
         element: <ExtraerDatos />,
       },
+      {
+        path: "example",
+        element: <Example />,
+      },
     ],
   },
   {
