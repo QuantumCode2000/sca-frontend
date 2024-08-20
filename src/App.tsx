@@ -13,6 +13,7 @@ import Example from "./views/Example/Example";
 import Actas from "./views/Actas/Actas";
 import InsertPrivateKey from "./pages/InsertPrivateKey/InsertPrivateKey";
 import ExtraerDatos from "./views/ExtraerDatos/ExtraerDatos";
+import ReportesPersonal from "./views/ReportesPersonal/ReportesPersonal";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -57,6 +58,10 @@ const router = createBrowserRouter([
       {
         path: "example",
         element: <Example />,
+      },
+      {
+        path: "reportes-personal",
+        element: <ReportesPersonal />,
       },
     ],
   },
