@@ -7,6 +7,7 @@ import {
   grados,
   especialidades,
 } from "../../data/selectOptions";
+import { useUsers } from "../../contexts/UsersContext/UsersContext";
 import type { User } from "../../contexts/UsersContext/interfaces";
 
 interface FormPersonalRegisterProps {
@@ -22,11 +23,14 @@ const FormPersonalRegister: React.FC<FormPersonalRegisterProps> = ({
   handleChange,
   handleSubmit,
 }) => {
+  const { users } = useUsers();
   const [isConfirmModalOpen, setConfirmModalOpen] = useState(false);
   const [localErrors, setLocalErrors] = useState<Partial<User>>({});
 
   const validateForm = (): Partial<User> => {
     const newErrors: Partial<User> = {};
+
+    // Validaciones estándar
     if (!formData.ci) newErrors.ci = "CI es requerido";
     if (!formData.extension) newErrors.extension = "Extensión es requerida";
     if (!formData.cm) newErrors.cm = "Carnet Militar es requerido";
@@ -39,6 +43,16 @@ const FormPersonalRegister: React.FC<FormPersonalRegisterProps> = ({
       newErrors.apellidoPaterno = "Apellido Paterno es requerido";
     if (!formData.apellidoMaterno)
       newErrors.apellidoMaterno = "Apellido Materno es requerido";
+
+    // Verificación de duplicados
+    if (users.some((user) => user.ci === formData.ci)) {
+      newErrors.ci = "Este CI ya está registrado";
+    }
+
+    if (users.some((user) => user.cm === formData.cm)) {
+      newErrors.cm = "Este Carnet Militar ya está registrado";
+    }
+
     return newErrors;
   };
 

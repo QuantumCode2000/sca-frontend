@@ -14,17 +14,21 @@ const estados = ["Activo", "Inactivo"];
 const inSystemPermissions = ["Sí", "No"];
 
 interface FormPersonalRegisterProps {
+  formDataEdit: User;
   formData: User;
   handleChange: (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => void;
   handleSubmit: () => void;
+  setFormDataEdit: React.Dispatch<React.SetStateAction<User>>;
 }
 
 const FormPersonalEdit: React.FC<FormPersonalRegisterProps> = ({
   formData,
   handleChange,
   handleSubmit,
+  formDataEdit,
+  setFormDataEdit,
 }) => {
   const [isConfirmModalOpen, setConfirmModalOpen] = useState(false);
   const [localErrors, setLocalErrors] = useState<Partial<User>>({});
@@ -51,14 +55,16 @@ const FormPersonalEdit: React.FC<FormPersonalRegisterProps> = ({
       if (!password) newErrors.password = "Nueva contraseña es requerida";
       if (!confirmPassword)
         newErrors.confirmPassword = "Confirmar contraseña es requerido";
-      if (password !== confirmPassword)
+      if (password !== confirmPassword) {
+        console.log("password", password);
+        console.log("confirmPassword", confirmPassword);
         newErrors.passwordMismatch = "Las contraseñas no coinciden";
+      }
     }
-
     return newErrors;
   };
 
-  const handleConfirm = (e) => {
+  const handleConfirm = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const errors = validateForm();
     if (Object.keys(errors).length === 0) {
@@ -70,10 +76,28 @@ const FormPersonalEdit: React.FC<FormPersonalRegisterProps> = ({
 
   const handleConfirmSubmit = () => {
     setConfirmModalOpen(false);
+
     if (showPasswordFields) {
-      handleChange({ target: { id: "password", value: password } });
+      // Actualiza el estado y luego ejecuta handleSubmit dentro del callback
+      setFormDataEdit((prevData) => {
+        const updatedData = {
+          ...prevData,
+          password: password,
+        };
+
+        console.log(
+          "updatedData después de asignar la contraseña:",
+          updatedData,
+        );
+
+        // Aquí llamamos a handleSubmit después de que el estado se haya actualizado
+        handleSubmit();
+
+        return updatedData;
+      });
+    } else {
+      handleSubmit();
     }
-    handleSubmit();
   };
 
   const handleCloseModal = () => {
@@ -93,6 +117,7 @@ const FormPersonalEdit: React.FC<FormPersonalRegisterProps> = ({
           value={formData.ci}
           onChange={handleChange}
           errorMessage={localErrors.ci}
+          disabled
         />
         <Select
           id="extension"
@@ -194,11 +219,8 @@ const FormPersonalEdit: React.FC<FormPersonalRegisterProps> = ({
               id="password"
               label="Nueva Contraseña"
               placeholder="Nueva Contraseña"
-              value={
-                formData.password ||
-                (formData.password === "" ? "" : formData.password)
-              }
-              onChange={handleChange}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               errorMessage={localErrors.password}
             />
             <Input

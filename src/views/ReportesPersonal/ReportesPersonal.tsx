@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from "react";
+import  { useEffect, useState } from "react";
 import { Pie } from "react-chartjs-2";
 import "chart.js/auto";
 import { useUsers } from "../../contexts/UsersContext/UsersContext";
-
 
 const ReportesPersonal = () => {
   const [estadoData, setEstadoData] = useState(null);
@@ -11,7 +10,6 @@ const ReportesPersonal = () => {
   const [cantidadUsuariosData, setCantidadUsuariosData] = useState(null);
   const { users } = useUsers();
   useEffect(() => {
-    // Usuarios Activos vs Inactivos
     setEstadoData({
       labels: ["Activo", "Inactivo"],
       datasets: [
@@ -26,7 +24,6 @@ const ReportesPersonal = () => {
       ],
     });
 
-    // Permisos en el Sistema
     setPermisoData({
       labels: ["Con Permiso", "Sin Permiso"],
       datasets: [
@@ -41,22 +38,21 @@ const ReportesPersonal = () => {
       ],
     });
 
-    // Usuarios por Rol
     setRolData({
-      labels: ["Administrador", "Usuario"],
+      labels: ["Administrador", "Encargado", "Personal"],
       datasets: [
         {
           data: [
             users.filter((user) => user.rol === "Administrador").length,
-            users.filter((user) => user.rol === "Usuario").length,
+            users.filter((user) => user.rol === "Encargado").length,
+            users.filter((user) => user.rol === "Personal").length,
           ],
-          backgroundColor: ["#4BC0C0", "#FFCE56"],
-          hoverBackgroundColor: ["#4BC0C0", "#FFCE56"],
+          backgroundColor: ["#4BC0C0", "#FFCE56", "#FF6384"],
+          hoverBackgroundColor: ["#4BC0C0", "#FFCE56", "#FF6384"],
         },
       ],
     });
 
-    // Cantidad de Usuarios
     setCantidadUsuariosData({
       labels: ["Total de Usuarios"],
       datasets: [

@@ -6,16 +6,23 @@ import { MovementsProvider } from "./contexts/MovementsContext/MovementsContext.
 import { WeaponsProvider } from "./contexts/WeaponsContext/WeaponsContext.tsx";
 import { UsersProvider } from "./contexts/UsersContext/UsersContext.tsx";
 import { ActasProvider } from "./contexts/ActasContext/ActasContext.tsx";
+import { KeyProvider } from "./contexts/KeyContext/KeyContext.tsx";
+import { AuthProvider } from "./contexts/AuthContext/AuthContext.tsx";
+
 ReactDOM.createRoot(document.getElementById("root")!).render(
-  <UsersProvider>
-    <WeaponsProvider>
-      <MovementsProvider>
-        <ActasProvider>
-          <React.StrictMode>
-            <App />
-          </React.StrictMode>
-        </ActasProvider>
-      </MovementsProvider>
-    </WeaponsProvider>
-  </UsersProvider>,
+  <React.StrictMode>
+    <KeyProvider>
+      <AuthProvider>
+        <UsersProvider>
+          <WeaponsProvider>
+            <MovementsProvider>
+              <ActasProvider>
+                <App />
+              </ActasProvider>
+            </MovementsProvider>
+          </WeaponsProvider>
+        </UsersProvider>
+      </AuthProvider>
+    </KeyProvider>
+  </React.StrictMode>,
 );

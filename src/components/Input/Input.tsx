@@ -1,8 +1,23 @@
-const Input = ({
+import React from "react";
+
+interface InputProps {
+  id: string;
+  label?: string;
+  type?: string;
+  placeholder?: string;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  disabled?: boolean;
+  errorMessage?: string;
+  helperText?: string;
+  [x: string]: any;
+}
+
+const Input: React.FC<InputProps> = ({
   id,
   label,
   type = "text",
-  placeholder,
+  placeholder = "",
   value,
   onChange,
   disabled = false,

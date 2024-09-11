@@ -19,7 +19,13 @@ const armamentos = [
   "Revolver",
 ];
 
-const FormWeaponEdit = ({ formData, handleChange, handleSubmit }) => {
+const FormWeaponEdit = ({
+  formData,
+  handleChange,
+  handleSubmit,
+  setFormDataEdit,
+  formDataEdit,
+}) => {
   const [isConfirmModalOpen, setConfirmModalOpen] = useState(false);
   const [localErrors, setLocalErrors] = useState({});
   const { users } = useUsers();

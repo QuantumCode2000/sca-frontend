@@ -1,11 +1,12 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import axios from "axios";
 import { Navigate } from "react-router-dom";
+import { useKey } from "../../contexts/KeyContext/KeyContext"; // Importa el hook useKey
 
 const InsertPrivateKey = () => {
-  const [privateKey, setPrivateKey] = useState("");
   const [error, setError] = useState("");
   const [redirect, setRedirect] = useState(false);
+  const { privateKey, setPrivateKey } = useKey(); // Obtén la clave privada del contexto
 
   const handleVerifyKey = async () => {
     try {
@@ -21,7 +22,7 @@ const InsertPrivateKey = () => {
   };
 
   if (redirect) {
-    return <Navigate to="/historial-movimientos" />;
+    return <Navigate to="/login" />;
   }
 
   return (
@@ -32,7 +33,7 @@ const InsertPrivateKey = () => {
           placeholder="Ingrese la clave privada"
           value={privateKey}
           onChange={(e) => setPrivateKey(e.target.value)}
-          rows="10"
+          rows={10}
           style={{
             WebkitTextSecurity: "disc",
             MozTextSecurity: "disc",

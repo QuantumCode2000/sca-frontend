@@ -1,4 +1,17 @@
-const Button = ({
+import React from "react";
+
+interface ButtonProps {
+  onClick?: React.MouseEventHandler<HTMLButtonElement>;
+  text: string;
+  type?: "button" | "submit" | "reset";
+  size?: "sm" | "md" | "lg";
+  color?: "blue" | "red";
+  variant?: "solid" | "outline" | "text";
+  className?: string;
+  disabled?: boolean;
+}
+
+const Button: React.FC<ButtonProps> = ({
   onClick,
   text,
   type = "button",
@@ -6,15 +19,14 @@ const Button = ({
   color = "blue",
   variant = "solid",
   className = "",
+  disabled = false,
 }) => {
-  // Define base styles for button sizes
   const sizeClasses = {
     sm: "py-1 px-3 text-sm",
     md: "py-2.5 px-5 text-base",
     lg: "py-3 px-6 text-lg",
   };
 
-  // Define color schemes
   const colorClasses = {
     blue: {
       solid:
@@ -30,10 +42,10 @@ const Button = ({
         "text-red-600 border-red-600 bg-transparent hover:bg-red-600 hover:text-white focus:ring-red-300",
       text: "text-red-600 bg-transparent hover:text-red-700 focus:ring-red-300",
     },
-    // Add more color schemes as needed
   };
 
-  // Get the correct class names based on size and color/variant
+  const disabledClasses = "opacity-50 cursor-not-allowed";
+
   const selectedSizeClasses = sizeClasses[size] || sizeClasses.md;
   const selectedColorClasses =
     (colorClasses[color] && colorClasses[color][variant]) ||
@@ -42,8 +54,11 @@ const Button = ({
   return (
     <button
       type={type}
-      className={`${selectedSizeClasses} ${selectedColorClasses} rounded-lg border focus:outline-none focus:z-10 focus:ring-4 transition duration-300 ease-in-out ${className}`}
+      className={`${selectedSizeClasses} ${selectedColorClasses} ${
+        disabled ? disabledClasses : ""
+      } rounded-lg border focus:outline-none focus:z-10 focus:ring-4 transition duration-300 ease-in-out ${className}`}
       onClick={onClick}
+      disabled={disabled}
     >
       {text}
     </button>

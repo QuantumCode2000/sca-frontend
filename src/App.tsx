@@ -4,21 +4,40 @@ import Reportes from "./views/Reportes/Reportes";
 import WeaponExit from "./views/WeaponExit/WeaponExit";
 import WeaponEntry from "./views/WeaponEntry/WeaponEntry";
 import WeaponMovementHistory from "./views/WeaponMovementHistory/WeaponMovementHistory";
-import Layout from "./layout/Layout";
 import Login from "./pages/Login/Login";
 import WeaponRegister from "./views/WeaponRegister/WeaponRegister";
 import PersonalRegister from "./views/PersonalRegister/PersonalRegister";
 import Example from "./views/Example/Example";
-
 import Actas from "./views/Actas/Actas";
 import InsertPrivateKey from "./pages/InsertPrivateKey/InsertPrivateKey";
 import ExtraerDatos from "./views/ExtraerDatos/ExtraerDatos";
 import ReportesPersonal from "./views/ReportesPersonal/ReportesPersonal";
+import PrivateRoute from "./routes/PrivateRoute";
+import PublicRoute from "./routes/PublicRoute";
+
 const router = createBrowserRouter([
   {
-    path: "/",
-    element: <Layout />,
+    path: "/insert-private-key",
+    element: <InsertPrivateKey />,
+  },
+  {
+    path: "/login",
+    element: <PublicRoute />,
     children: [
+      {
+        index: true,
+        element: <Login />,
+      },
+    ],
+  },
+  {
+    path: "/",
+    element: <PrivateRoute />,
+    children: [
+      {
+        index: true,
+        element: <Unidades />,
+      },
       {
         path: "unidades",
         element: <Unidades />,
@@ -64,15 +83,6 @@ const router = createBrowserRouter([
         element: <ReportesPersonal />,
       },
     ],
-  },
-  {
-    path: "login",
-    element: <Login />,
-  },
-  {
-    path: "/",
-    element: <InsertPrivateKey />,
-    index: true,
   },
 ]);
 

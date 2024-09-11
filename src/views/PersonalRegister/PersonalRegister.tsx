@@ -32,11 +32,11 @@ const firstState: FormData = {
 
 const PersonalRegister: React.FC = () => {
   const { users, addUser, updateUser } = useUsers();
-
   const [isModalOpen, setOpenModal] = useState<boolean>(false);
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [isViewMoreOpen, setViewMoreOpen] = useState<boolean>(false);
   const [formData, setFormData] = useState<FormData>(firstState);
+  const [formDataEdit, setFormDataEdit] = useState<FormData>({});
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
   const closeModal = () => {
@@ -67,7 +67,7 @@ const PersonalRegister: React.FC = () => {
   const handleEdit = (ci: string) => {
     const user = users.find((user) => user.ci === ci);
     if (user) {
-      setFormData(user);
+      setFormData({ ...user, password: user.ci });
       setIsEdit(true);
       setOpenModal(true);
     }
@@ -77,17 +77,42 @@ const PersonalRegister: React.FC = () => {
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
     const { id, value } = e.target;
+
     setFormData((prevData) => ({
+      ...prevData,
+      [id]: value,
+      ...(id === "ci" && { password: value }),
+    }));
+  };
+
+  const handleChangeEdit = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+  ) => {
+    const { id, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [id]: value,
+    }));
+
+    setFormDataEdit((prevData) => ({
       ...prevData,
       [id]: value,
     }));
   };
 
   const handleSubmit = () => {
+    console.log("formDataEdit antes de enviar:", formDataEdit);
     if (isEdit) {
-      updateUser(formData);
+      updateUser({
+        ...formDataEdit,
+        id: formData.id,
+      });
+      setFormDataEdit({});
     } else {
-      addUser(formData);
+      addUser({
+        ...formData,
+        password: formData.ci,
+      });
     }
     closeModal();
   };
@@ -175,8 +200,10 @@ const PersonalRegister: React.FC = () => {
         {isEdit ? (
           <FormPersonalEdit
             formData={formData}
-            handleChange={handleChange}
+            handleChange={handleChangeEdit}
             handleSubmit={handleSubmit}
+            setFormDataEdit={setFormDataEdit}
+            formDataEdit={formDataEdit}
           />
         ) : (
           <FormPersonalRegister

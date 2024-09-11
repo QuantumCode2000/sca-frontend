@@ -23,12 +23,26 @@ const Table = ({ header, body, renderCell }) => {
     setCurrentPage(1);
   };
 
-  const filteredBody = body.filter((item) =>
-    item[selectedColumn]
-      .toString()
-      .toLowerCase()
-      .includes(filterText.toLowerCase()),
-  );
+  // const filteredBody = body.filter((item) =>
+  //   item[selectedColumn]
+  //     .toString()
+  //     .toLowerCase()
+  //     .includes(filterText.toLowerCase()),
+  // );
+  const filteredBody = body.filter((item) => {
+    const cellValue = item[selectedColumn];
+
+    // Verifica si cellValue no es null o undefined
+    if (cellValue !== undefined && cellValue !== null) {
+      return cellValue
+        .toString()
+        .toLowerCase()
+        .includes(filterText.toLowerCase());
+    }
+
+    // Si es undefined o null, no coincide con el filtro
+    return false;
+  });
 
   const totalPages = Math.ceil(filteredBody.length / itemsPerPage);
   const currentBody = filteredBody.slice(

@@ -8,6 +8,7 @@ function ApplicantInfo({
   setApplicantInformation,
   loading,
   setMotivo,
+  motivo,
 }) {
   useEffect(() => {
     if (applicantCI.length >= 5) {
@@ -51,9 +52,13 @@ function ApplicantInfo({
         </h2>
         <textarea
           placeholder="Motivo de la solicitud"
-          className="w-full px-4 py-2 mb-4 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 transition duration-300 ease-in-out"
+          className="w-full text-xl text-justify  h-[150px] px-4 py-2 mb-4 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 transition duration-300 ease-in-out"
           onChange={(e) => setMotivo(e.target.value)}
+          maxLength={150}
         ></textarea>
+        <div className="text-right text-sm text-gray-500">
+          {motivo.length}/{150} caracteres
+        </div>
       </div>
     </div>
   );

@@ -23,6 +23,7 @@ const firstState: Weapon = {
   observations: "",
   industria: "",
   armamento: "",
+  inInventory: "",
 };
 
 const WeaponRegister: React.FC = () => {
@@ -32,6 +33,7 @@ const WeaponRegister: React.FC = () => {
   const [formData, setFormData] = useState<Weapon>(firstState);
   const [selectedWeapon, setSelectedWeapon] = useState<Weapon | null>(null);
   const { weapons, addWeapon, updateWeapon } = useWeapons();
+  const [formDataEdit, setFormDataEdit] = useState<Weapon>({});
 
   const closeModal = () => {
     setOpenModal(false);
@@ -68,7 +70,9 @@ const WeaponRegister: React.FC = () => {
   };
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >,
   ) => {
     const { id, value } = e.target;
     setFormData((prevData) => ({
@@ -77,11 +81,35 @@ const WeaponRegister: React.FC = () => {
     }));
   };
 
+  const handleChangeEdit = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >,
+  ) => {
+    const { id, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [id]: value,
+    }));
+
+    setFormDataEdit((prevData) => ({
+      ...prevData,
+      [id]: value,
+    }));
+  };
+
   const handleSubmit = () => {
+    console.log("formDataEdit antes de enviar:", formDataEdit);
     if (isEdit) {
-      updateWeapon(formData);
+      updateWeapon({
+        ...formDataEdit,
+        id: formData.id,
+      });
     } else {
-      addWeapon(formData);
+      addWeapon({
+        ...formData,
+        inInventory: "Sí",
+      });
     }
     closeModal();
   };
@@ -136,7 +164,7 @@ const WeaponRegister: React.FC = () => {
       </Content>
 
       <div className="flex justify-end mt-4">
-        <Button text="Registrar Armamento" onClick={openModal} textStyle={""} />
+        <Button text="Registrar Armamento" onClick={openModal} />
       </div>
 
       <Modal
@@ -147,8 +175,10 @@ const WeaponRegister: React.FC = () => {
         {isEdit ? (
           <FormWeaponEdit
             formData={formData}
-            handleChange={handleChange}
+            handleChange={handleChangeEdit}
             handleSubmit={handleSubmit}
+            setFormDataEdit={setFormDataEdit}
+            formDataEdit={formDataEdit}
           />
         ) : (
           <FormWeaponRegister

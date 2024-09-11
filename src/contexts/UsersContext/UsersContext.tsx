@@ -5,104 +5,114 @@ import React, {
   useEffect,
   ReactNode,
 } from "react";
-import { users as importedUsers } from "../../data/data";
+import axios, { AxiosError } from "axios"; // Importamos AxiosError
 import type { User, UsersContextProps } from "./interfaces";
 import {
   handleEncryptJSON,
-  handleDecryptObjects,
-  handleEncryptObjects,
+  handleDecryptReturnJSON,
 } from "../../utils/encryptionUtils";
+
+axios.defaults.baseURL = "http://127.0.0.1:4000/api/v1";
 
 const UsersContext = createContext<UsersContextProps | undefined>(undefined);
 
 const UsersProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [users, setUsers] = useState<User[]>([]);
-  const [encryptedUsers, setEncryptedUsers] = useState<User[]>([]);
-  const [error, setError] = useState<string>("");
+
+  // Mover fetchAndDecryptUsers fuera del useEffect para que pueda ser utilizado en otras funciones
+  const fetchAndDecryptUsers = async () => {
+    try {
+      const response = await axios.get("/usuarios");
+      const usuariosDesencriptadosConId = await Promise.all(
+        response.data.map(
+          async ({
+            _id,
+            createdAt,
+            __v,
+            ...resto
+          }: {
+            _id: string;
+            createdAt: string;
+            __v: number;
+          }) => {
+            try {
+              const dataDesencriptada = await handleDecryptReturnJSON(
+                JSON.stringify(resto),
+                (error: Error) =>
+                  console.error("Error decrypting users:", error),
+              );
+
+              return {
+                ...JSON.parse(dataDesencriptada as string),
+                id: _id,
+              };
+            } catch (error) {
+              console.error("Error during decryption", error);
+              return { ...resto, id: _id };
+            }
+          },
+        ),
+      );
+      setUsers(usuariosDesencriptadosConId);
+    } catch (error: AxiosError | any) {
+      if (error.response) {
+        console.error("Error fetching users:", error.response.data);
+      } else {
+        console.error("Error fetching users:", error.message);
+      }
+    }
+  };
 
   useEffect(() => {
-    const storedUsers = localStorage.getItem("users");
-    const itemExists = storedUsers !== null ? true : false;
-    if (itemExists) {
-      setEncryptedUsers(JSON.parse(storedUsers) as User[]);
-      handleDecryptObjects(
-        storedUsers,
-        (decryptedData) => setUsers(JSON.parse(decryptedData) as User[]),
-        setError,
-      );
-    } else {
-      handleEncryptObjects(
-        JSON.stringify(importedUsers),
-        (encryptedData) => {
-          handleDecryptObjects(
-            encryptedData,
-            (decryptedData) => setUsers(JSON.parse(decryptedData) as User[]),
-            setError,
-          );
-          localStorage.setItem("users", encryptedData);
-          setEncryptedUsers(JSON.parse(encryptedData) as User[]);
-        },
-        setError,
-      );
-    }
+    fetchAndDecryptUsers();
   }, []);
-  useEffect(() => {
-    if (users.length > 0) {
-      localStorage.setItem("users", JSON.stringify(encryptedUsers));
-      handleDecryptObjects(
-        localStorage.getItem("users"),
-        (decryptedData) => setUsers(JSON.parse(decryptedData) as User[]),
-        setError,
-      );
-    }
-  }, [encryptedUsers]);
 
   const addUser = async (user: User) => {
     try {
       await handleEncryptJSON(
         JSON.stringify(user),
-        (encryptedData) => {
-          setEncryptedUsers((prevUsers) => {
-            if (prevUsers.some((u) => u.ci === user.ci)) {
-              throw new Error("User with the same CI already exists");
-            }
-            const encryptedUser = JSON.parse(encryptedData);
-            return [...prevUsers, encryptedUser];
-          });
+
+        async (encryptedData: string) => {
+          const response = await axios.post(
+            "/usuarios",
+            JSON.parse(encryptedData),
+          );
+
+          setUsers((prevUsers) => [
+            ...prevUsers,
+            { ...user, id: response.data.id },
+          ]);
         },
-        setError,
+        (error: Error) => console.error("Error encrypting user:", error),
       );
-    } catch (error) {
-      console.error("Error encrypting user:", error);
+    } catch (error: any) {
+      console.error("Error adding user:", error.message);
     }
   };
 
-  const updateUser = async (updatedUser: User) => {
-    handleDecryptObjects(
-      localStorage.getItem("users"),
-      (decryptedData) => {
-        const decryptedUsers = JSON.parse(decryptedData) as User[];
-        const updatedUsers = decryptedUsers.map((user) => {
-          if (user.ci === updatedUser.ci) {
-            return updatedUser;
-          }
-          return user;
-        });
-        setUsers(updatedUsers);
-        handleEncryptObjects(
-          JSON.stringify(updatedUsers),
-          (encryptedData) => {
-            setEncryptedUsers(JSON.parse(encryptedData) as User[]);
-          },
-          setError,
-        );
-      },
-      setError,
-    );
+  const updateUser = async (updatedUser: Partial<User>) => {
+    console.log(updatedUser);
+    const { id, ...resto } = updatedUser;
+    try {
+      await handleEncryptJSON(
+        JSON.stringify(resto),
+        async (encryptedData: string) => {
+          await axios.patch(`/usuarios/${id}`, JSON.parse(encryptedData));
+          await fetchAndDecryptUsers();
+        },
+        (error: Error) => console.error("Error encrypting user:", error),
+      );
+    } catch (error: any) {
+      console.error("Error updating user:", error.message);
+    }
+  };
+
+  const removeUser = async (ci: string) => {
+    console.log(ci);
   };
 
   return (
-    <UsersContext.Provider value={{ users, addUser, updateUser }}>
+    <UsersContext.Provider value={{ users, addUser, updateUser, removeUser }}>
       {children}
     </UsersContext.Provider>
   );
@@ -118,108 +128,3 @@ const useUsers = (): UsersContextProps => {
 
 export { UsersProvider, useUsers };
 export type { User };
-
-// import React, {
-//   createContext,
-//   useContext,
-//   useState,
-//   useEffect,
-//   ReactNode,
-// } from "react";
-// import axios from "axios";
-// import type { User, UsersContextProps } from "./interfaces";
-// import {
-//   handleEncryptJSON,
-//   handleDecryptObjects,
-// } from "../../utils/encryptionUtils";
-
-// // Configura la URL base de axios
-// axios.defaults.baseURL = "http://127.0.0.1:5000";
-
-// const UsersContext = createContext<UsersContextProps | undefined>(undefined);
-
-// const UsersProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-//   const [users, setUsers] = useState<User[]>([]);
-//   const [error, setError] = useState<string>("");
-
-//   console.log("usuarios desencriptados", users);
-
-//   useEffect(() => {
-//     // Cargar usuarios desde la API
-//     axios
-//       .get("/usuarios")
-//       .then((response) => {
-//         const usuariosSinId = response.data.map(({ id, ...resto }) => {
-//           return { ...resto };
-//         });
-
-//         console.log("usuarios encriptados", usuariosSinId);
-//         handleDecryptObjects(
-//           JSON.stringify(usuariosSinId),
-//           (decryptedData) => setUsers(JSON.parse(decryptedData) as User[]),
-//           setError,
-//         );
-//       })
-//       .catch((error) => {
-//         setError("Error fetching users: " + error.message);
-//       });
-//   }, []);
-
-//   const addUser = async (user: User) => {
-//     try {
-//       // Encriptar el usuario antes de enviarlo
-//       await handleEncryptJSON(
-//         JSON.stringify(user),
-//         async (encryptedData) => {
-//           const encryptedUser = JSON.parse(encryptedData);
-//           const response = await axios.post("/usuarios", encryptedUser);
-//           setUsers((prevUsers) => [
-//             ...prevUsers,
-//             { ...user, id: response.data.id },
-//           ]);
-//         },
-//         setError,
-//       );
-//     } catch (error) {
-//       console.error("Error encrypting user:", error);
-//     }
-//   };
-
-//   const updateUser = async (updatedUser: User) => {
-//     try {
-//       // Encriptar el usuario antes de enviarlo
-//       await handleEncryptJSON(
-//         JSON.stringify(updatedUser),
-//         async (encryptedData) => {
-//           const encryptedUser = JSON.parse(encryptedData);
-//           await axios.patch(`/usuario/${updatedUser.id}`, encryptedUser);
-//           setUsers((prevUsers) =>
-//             prevUsers.map((user) =>
-//               user.id === updatedUser.id ? updatedUser : user,
-//             ),
-//           );
-//         },
-//         setError,
-//       );
-//     } catch (error) {
-//       console.error("Error updating user:", error);
-//     }
-//   };
-
-//   return (
-//     <UsersContext.Provider value={{ users, addUser, updateUser }}>
-//       {children}
-//     </UsersContext.Provider>
-//   );
-// };
-
-// const useUsers = (): UsersContextProps => {
-//   const context = useContext(UsersContext);
-//   if (!context) {
-//     throw new Error("useUsers must be used within a UsersProvider");
-//   }
-//   return context;
-// };
-
-// export { UsersProvider, useUsers };
-// export type { User };
