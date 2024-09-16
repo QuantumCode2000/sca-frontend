@@ -1,258 +1,15 @@
-// // import { useState } from "react";
-// // import { handleDecryptObjects } from "../../utils/encryptionUtils";
-// // import Papa from "papaparse";
-
-// // const ExtraerDatos = () => {
-// //   const [usersDecrypted, setUsersDecrypted] = useState([]);
-// //   const [weaponsDecrypted, setWeaponsDecrypted] = useState([]);
-// //   const [movementsDecrypted, setMovementsDecrypted] = useState([]);
-// //   const [error, setError] = useState("");
-
-// //   const decryptData = () => {
-// //     handleDecryptObjects(
-// //       localStorage.getItem("users"),
-// //       (decryptedData) => setUsersDecrypted(JSON.parse(decryptedData)),
-// //       setError,
-// //     );
-// //     handleDecryptObjects(
-// //       localStorage.getItem("weapons"),
-// //       (decryptedData) => setWeaponsDecrypted(JSON.parse(decryptedData)),
-// //       setError,
-// //     );
-// //     handleDecryptObjects(
-// //       localStorage.getItem("movements"),
-// //       (decryptedData) => setMovementsDecrypted(JSON.parse(decryptedData)),
-// //       setError,
-// //     );
-// //   };
-
-// //   const exportToCSV = () => {
-// //     const mergedData = [
-// //       ...usersDecrypted.map((user) => ({ type: "User", ...user })),
-// //       ...weaponsDecrypted.map((weapon) => ({ type: "Weapon", ...weapon })),
-// //       ...movementsDecrypted.map((movement) => ({
-// //         type: "Movement",
-// //         ...movement,
-// //       })),
-// //     ];
-
-// //     const csv = Papa.unparse(mergedData);
-// //     const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-// //     const link = document.createElement("a");
-// //     const url = URL.createObjectURL(blob);
-// //     link.href = url;
-// //     link.setAttribute("download", "decrypted_data.csv");
-// //     document.body.appendChild(link);
-// //     link.click();
-// //     document.body.removeChild(link);
-// //   };
-
-// //   const formatDataForTextarea = (data) => {
-// //     return data.map((item) => JSON.stringify(item, null, 2)).join("\n\n");
-// //   };
-
-// //   return (
-// //     <div>
-// //       <button
-// //         onClick={decryptData}
-// //         className="bg-blue-500 text-white px-4 py-2 rounded-md"
-// //       >
-// //         Desencriptar Datos
-// //       </button>
-// //       <button
-// //         onClick={exportToCSV}
-// //         className="bg-green-500 text-white px-4 py-2 rounded-md ml-2"
-// //         disabled={
-// //           !usersDecrypted.length &&
-// //           !weaponsDecrypted.length &&
-// //           !movementsDecrypted.length
-// //         }
-// //       >
-// //         Exportar a CSV
-// //       </button>
-
-// //       {error && <p className="text-red-500 mt-4">Error: {error}</p>}
-
-// //       <div className="mt-4">
-// //         <h2 className="text-xl font-bold">Usuarios Desencriptados</h2>
-// //         <textarea
-// //           className="w-full h-32 p-2 border rounded"
-// //           value={formatDataForTextarea(usersDecrypted)}
-// //           readOnly
-// //         />
-// //       </div>
-
-// //       <div className="mt-4">
-// //         <h2 className="text-xl font-bold">Armas Desencriptadas</h2>
-// //         <textarea
-// //           className="w-full h-32 p-2 border rounded"
-// //           value={formatDataForTextarea(weaponsDecrypted)}
-// //           readOnly
-// //         />
-// //       </div>
-
-// //       <div className="mt-4">
-// //         <h2 className="text-xl font-bold">Movimientos Desencriptados</h2>
-// //         <textarea
-// //           className="w-full h-32 p-2 border rounded"
-// //           value={formatDataForTextarea(movementsDecrypted)}
-// //           readOnly
-// //         />
-// //       </div>
-// //     </div>
-// //   );
-// // };
-
-// // export default ExtraerDatos;
-
-// import { useState } from "react";
-// import { handleDecryptObjects } from "../../utils/encryptionUtils";
-// import Papa from "papaparse";
-
-// const ExtraerDatos = () => {
-//   const [usersDecrypted, setUsersDecrypted] = useState([]);
-//   const [weaponsDecrypted, setWeaponsDecrypted] = useState([]);
-//   const [movementsDecrypted, setMovementsDecrypted] = useState([]);
-//   const [error, setError] = useState("");
-
-//   const decryptData = () => {
-//     handleDecryptObjects(
-//       localStorage.getItem("users"),
-//       (decryptedData) => setUsersDecrypted(JSON.parse(decryptedData)),
-//       setError,
-//     );
-//     handleDecryptObjects(
-//       localStorage.getItem("weapons"),
-//       (decryptedData) => setWeaponsDecrypted(JSON.parse(decryptedData)),
-//       setError,
-//     );
-//     handleDecryptObjects(
-//       localStorage.getItem("movements"),
-//       (decryptedData) => setMovementsDecrypted(JSON.parse(decryptedData)),
-//       setError,
-//     );
-//   };
-
-//   const exportToCSV = () => {
-//     const movementsData = movementsDecrypted.map((movement) => ({
-//       id: movement.id || "",
-//       fechaSalida: movement.fechaSalida || "",
-//       fechaRegreso: movement.fechaRegreso || "",
-//       codigo: movement.codigo || "",
-//       solicitante: movement.solicitante || "",
-//       motivo: movement.motivo || "",
-//       actaSalida: movement.actaSalida || "",
-//       actaRegreso: movement.actaRegreso || "",
-//     }));
-
-//     const weaponsData = weaponsDecrypted.map((weapon) => ({
-//       codigo: weapon.codigo || "",
-//       nroarma: weapon.nroarma || "",
-//       estado: weapon.estado || "",
-//       observations: weapon.observations || "",
-//       propietario: weapon.propietario || "",
-//       armamento: weapon.armamento || "",
-//       modelo: weapon.modelo || "",
-//       calibre: weapon.calibre || "",
-//       industria: weapon.industria || "",
-//       inInventory: weapon.inInventory || "",
-//       clasification: weapon.clasification || "",
-//       clasificacion: weapon.clasificacion || "",
-//     }));
-
-//     const usersData = usersDecrypted.map((user) => ({
-//       ci: user.ci || "",
-//       extension: user.extension || "",
-//       cm: user.cm || "",
-//       grado: user.grado || "",
-//       especialidad: user.especialidad || "",
-//       nombre: user.nombre || "",
-//       apellidoPaterno: user.apellidoPaterno || "",
-//       apellidoMaterno: user.apellidoMaterno || "",
-//       correo: user.correo || "",
-//       inSystemPermission: user.inSystemPermission || "",
-//       rol: user.rol || "",
-//       estado: user.estado || "",
-//     }));
-
-//     const mergedData = [
-//       ...movementsData.map((item) => ({ type: "Movement", ...item })),
-//       ...weaponsData.map((item) => ({ type: "Weapon", ...item })),
-//       ...usersData.map((item) => ({ type: "User", ...item })),
-//     ];
-
-//     const csv = Papa.unparse(mergedData);
-//     const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-//     const link = document.createElement("a");
-//     const url = URL.createObjectURL(blob);
-//     link.href = url;
-//     link.setAttribute("download", "decrypted_data.csv");
-//     document.body.appendChild(link);
-//     link.click();
-//     document.body.removeChild(link);
-//   };
-
-//   return (
-//     <div>
-//       <button
-//         onClick={decryptData}
-//         className="bg-blue-500 text-white px-4 py-2 rounded-md"
-//       >
-//         Desencriptar Datos
-//       </button>
-//       <button
-//         onClick={exportToCSV}
-//         className="bg-green-500 text-white px-4 py-2 rounded-md ml-2"
-//         disabled={
-//           !usersDecrypted.length &&
-//           !weaponsDecrypted.length &&
-//           !movementsDecrypted.length
-//         }
-//       >
-//         Exportar a CSV
-//       </button>
-
-//       {error && <p className="text-red-500 mt-4">Error: {error}</p>}
-
-//       <div className="mt-4">
-//         <h2 className="text-xl font-bold">Usuarios Desencriptados</h2>
-//         <textarea
-//           className="w-full h-32 p-2 border rounded"
-//           value={JSON.stringify(usersDecrypted, null, 2)}
-//           readOnly
-//         />
-//       </div>
-
-//       <div className="mt-4">
-//         <h2 className="text-xl font-bold">Armas Desencriptadas</h2>
-//         <textarea
-//           className="w-full h-32 p-2 border rounded"
-//           value={JSON.stringify(weaponsDecrypted, null, 2)}
-//           readOnly
-//         />
-//       </div>
-
-//       <div className="mt-4">
-//         <h2 className="text-xl font-bold">Movimientos Desencriptados</h2>
-//         <textarea
-//           className="w-full h-32 p-2 border rounded"
-//           value={JSON.stringify(movementsDecrypted, null, 2)}
-//           readOnly
-//         />
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default ExtraerDatos;
 import { useState } from "react";
 import { handleDecryptObjects } from "../../utils/encryptionUtils";
-import Papa from "papaparse";
-
+import { useMovements } from "../../contexts/MovementsContext/MovementsContext";
+import { useWeapons } from "../../contexts/WeaponsContext/WeaponsContext";
+import { useUsers } from "../../contexts/UsersContext/UsersContext";
 const ExtraerDatos = () => {
-  const [usersDecrypted, setUsersDecrypted] = useState([]);
-  const [weaponsDecrypted, setWeaponsDecrypted] = useState([]);
-  const [movementsDecrypted, setMovementsDecrypted] = useState([]);
+  const { movements } = useMovements();
+  const { weapons } = useWeapons();
+  const { users } = useUsers();
+  const [usersDecrypted, setUsersDecrypted] = useState(users);
+  const [weaponsDecrypted, setWeaponsDecrypted] = useState(weapons);
+  const [movementsDecrypted, setMovementsDecrypted] = useState(movements);
   const [userCsv, setUserCsv] = useState("");
   const [weaponCsv, setWeaponCsv] = useState("");
   const [movementCsv, setMovementCsv] = useState("");
@@ -276,7 +33,12 @@ const ExtraerDatos = () => {
       setError,
     );
   };
+
   function jsonToCsv(jsonData) {
+    if (!jsonData || jsonData.length === 0) {
+      return ""; // Devuelve una cadena vacía si no hay datos
+    }
+
     let csv = "";
 
     // Extract headers
@@ -285,7 +47,7 @@ const ExtraerDatos = () => {
 
     // Extract values
     jsonData.forEach((obj) => {
-      const values = headers.map((header) => obj[header]);
+      const values = headers.map((header) => obj[header] || ""); // Maneja valores faltantes
       csv += values.join(",") + "\n";
     });
 
@@ -293,6 +55,11 @@ const ExtraerDatos = () => {
   }
 
   const exportToCSV = () => {
+    if (!usersDecrypted || !weaponsDecrypted || !movementsDecrypted) {
+      setError("Datos no disponibles para exportar.");
+      return;
+    }
+
     const usersCsv = jsonToCsv(usersDecrypted);
     const weaponsCsv = jsonToCsv(weaponsDecrypted);
     const movementsCsv = jsonToCsv(movementsDecrypted);

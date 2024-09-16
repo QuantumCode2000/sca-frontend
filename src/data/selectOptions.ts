@@ -50,6 +50,13 @@ const especialidades = [
   "CGIM.",
   "CGONIN.",
 ];
+const actaTypes = [
+  "Cambio de Destino",
+  "Fallecimiento",
+  "Servicio Pasivo",
+  "Retiro Voluntario",
+  "Retiro Obligatorio",
+  "Comisión Estudio",
+];
 
-
-export { departamentos, grados, especialidades };
+export { departamentos, grados, especialidades, actaTypes };

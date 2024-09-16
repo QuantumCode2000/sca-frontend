@@ -55,6 +55,12 @@ const optionsEncargado = [
         text: "Reportes Personal",
       },
       {
+        to: "/actas",
+        icon: <FaBuildingFlag />,
+        text: "Actas Registro",
+      },
+
+      {
         to: "/extraer-datos",
         icon: <FaBuildingFlag />,
         text: "Extraer Datos",
@@ -116,6 +122,16 @@ const options = [
         to: "/extraer-datos",
         icon: <FaBuildingFlag />,
         text: "Extraer Datos",
+      },
+    ],
+  },
+  {
+    text: "Actas",
+    options: [
+      {
+        to: "/actas",
+        icon: <FaBuildingFlag />,
+        text: "Actas Registro",
       },
     ],
   },

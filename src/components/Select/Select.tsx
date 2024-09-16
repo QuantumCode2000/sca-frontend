@@ -1,24 +1,35 @@
-import { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 
-const Select = ({
+// Definimos los tipos de las props para mayor claridad y seguridad de tipos
+interface SelectProps {
+  id: string;
+  label?: string;
+  options: string[];
+  value: string;
+  onChange: (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+  ) => void;
+  disabled?: boolean;
+  error?: boolean | string;
+  helperText?: string;
+  [key: string]: any;
+}
+
+const Select: React.FC<SelectProps> = ({
   id,
   label,
   options,
   value,
   onChange,
   disabled = false,
-  errorMessage = "",
+  error = false,
   helperText = "",
-  isMulti = false,
   ...props
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState("");
   const [filteredOptions, setFilteredOptions] = useState(options);
-  const [selectedOptions, setSelectedOptions] = useState(
-    isMulti ? (Array.isArray(value) ? value : []) : value || "",
-  );
-  const selectRef = useRef();
+  const selectRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setFilteredOptions(
@@ -34,28 +45,18 @@ const Select = ({
     }
   };
 
-  const handleSelect = (option) => {
-    if (isMulti) {
-      const newValue = selectedOptions.includes(option)
-        ? selectedOptions.filter((opt) => opt !== option)
-        : [...selectedOptions, option];
-      setSelectedOptions(newValue);
-      onChange({ target: { id, value: newValue } });
-    } else {
-      setSelectedOptions(option);
-      onChange({ target: { id, value: option } });
-      setIsOpen(false);
-    }
+  const handleSelect = (option: string) => {
+    onChange({
+      target: { id, value: option },
+    } as React.ChangeEvent<HTMLInputElement>);
+    setIsOpen(false);
   };
 
-  const handleRemoveOption = (option) => {
-    const newValue = selectedOptions.filter((opt) => opt !== option);
-    setSelectedOptions(newValue);
-    onChange({ target: { id, value: newValue } });
-  };
-
-  const handleClickOutside = (event) => {
-    if (selectRef.current && !selectRef.current.contains(event.target)) {
+  const handleClickOutside = (event: MouseEvent) => {
+    if (
+      selectRef.current &&
+      !selectRef.current.contains(event.target as Node)
+    ) {
       setIsOpen(false);
     }
   };
@@ -67,10 +68,7 @@ const Select = ({
     };
   }, []);
 
-  const displayValue =
-    isMulti && Array.isArray(selectedOptions)
-      ? selectedOptions.join(", ")
-      : selectedOptions;
+  const hasError = !!error; // Convierte cualquier valor truthy en un booleano
 
   return (
     <div className="mb-4 relative" ref={selectRef}>
@@ -84,33 +82,11 @@ const Select = ({
       )}
       <div
         className={`bg-gray-50 border ${
-          errorMessage ? "border-red-500" : "border-gray-300"
+          hasError ? "border-red-500" : "border-gray-300"
         } text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-pointer`}
         onClick={toggleDropdown}
       >
-        {isMulti && selectedOptions.length > 0 ? (
-          <div className="flex flex-wrap">
-            {selectedOptions.map((option, index) => (
-              <div
-                key={index}
-                className="flex items-center m-1 p-1 bg-gray-200 rounded"
-              >
-                <span className="mr-2">{option}</span>
-                <button
-                  className="text-red-500"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleRemoveOption(option);
-                  }}
-                >
-                  x
-                </button>
-              </div>
-            ))}
-          </div>
-        ) : (
-          displayValue || "Selecciona una opción"
-        )}
+        {value || "Selecciona una opción"}
       </div>
       {isOpen && (
         <div className="absolute z-10 w-full bg-white border mt-1 rounded shadow-lg">
@@ -126,11 +102,7 @@ const Select = ({
               filteredOptions.map((option, index) => (
                 <li
                   key={index}
-                  className={`p-2 hover:bg-gray-200 cursor-pointer ${
-                    isMulti && selectedOptions.includes(option)
-                      ? "bg-gray-100"
-                      : ""
-                  }`}
+                  className="p-2 hover:bg-gray-200 cursor-pointer"
                   onClick={() => handleSelect(option)}
                 >
                   {option}
@@ -147,9 +119,7 @@ const Select = ({
           {helperText}
         </p>
       )}
-      {errorMessage && (
-        <p className="mt-1 text-sm text-red-500">{errorMessage}</p>
-      )}
+      {hasError && <p className="mt-1 text-sm text-red-500">{error}</p>}
     </div>
   );
 };

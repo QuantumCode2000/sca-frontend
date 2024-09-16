@@ -8,15 +8,7 @@ import { useUsers } from "../../contexts/UsersContext/UsersContext";
 import { useActas } from "../../contexts/ActasContext/ActasContext";
 import { useWeapons } from "../../contexts/WeaponsContext/WeaponsContext";
 import { useMovements } from "../../contexts/MovementsContext/MovementsContext";
-
-const actaTypes = [
-  "Cambio de Destino",
-  "Fallecimiento",
-  "Servicio Pasivo",
-  "Retiro Voluntario",
-  "Retiro Obligatorio",
-  "Comisión Estudio",
-];
+import { actaTypes } from "../../data/selectOptions";
 
 const FormActaRegister = ({
   formData,
@@ -30,6 +22,9 @@ const FormActaRegister = ({
   const { weapons } = useWeapons();
   const { movements } = useMovements();
 
+  // State to track which encargados will be included in the PDF
+  const [includedEncargados, setIncludedEncargados] = useState({});
+
   const findWeapon = (codigo) => {
     const tableHeaders = [
       "nroarma",
@@ -40,19 +35,17 @@ const FormActaRegister = ({
       "observations",
     ];
     const weapon = weapons.find((w) => w.codigo === codigo);
-    const rows = tableHeaders.map((header) => weapon[header]);
-    return rows;
+    return tableHeaders.map((header) => (weapon ? weapon[header] : ""));
   };
 
   const validateForm = () => {
-    console.log("Validando formulario...");
     const errors = {};
     if (!formData.movementId) errors.movementId = "Movimiento ID es requerido";
     if (!formData.actaType) errors.actaType = "Tipo de Acta es requerido";
     if (formData.entregueConforme === "Otro" && !formData.otroNombre) {
       errors.otroNombre = "Debe proporcionar un nombre si selecciona 'Otro'";
     }
-    console.log("Errores de validación:", errors);
+    setLocalErrors(errors);
     return errors;
   };
 
@@ -278,14 +271,24 @@ const FormActaRegister = ({
     }
   };
 
+  const handleCheckboxChange = (id) => {
+    setIncludedEncargados((prev) => ({
+      ...prev,
+      [id]: !prev[id],
+    }));
+  };
+
   return (
     <form className="space-y-4">
       <Select
         id="actaType"
         label="Tipo de Acta"
         value={formData.actaType}
-        onChange={handleChange}
+        onChange={(e) =>
+          handleChange({ target: { id: "actaType", value: e.target.value } })
+        }
         options={actaTypes}
+        error={localErrors.actaType}
       />
       <Input
         id="movementId"
@@ -293,32 +296,42 @@ const FormActaRegister = ({
         value={formData.movementId}
         onChange={handleChange}
         readOnly
+        error={localErrors.movementId}
       />
 
-      <Select
-        id="entregueConforme"
-        label="Entregue Conforme"
-        value={formData.entregueConforme}
-        onChange={handleChange}
-        options={[
-          ...users.map(
-            (user) =>
-              `${user.grado} ${user.especialidad} ${user.nombre} ${user.apellidoPaterno} ${user.apellidoMaterno}`,
-          ),
-          "Otro",
-        ]}
-      />
-      {formData.entregueConforme === "Otro" && (
-        <Input
-          id="otroNombre"
-          label="Nombre del receptor"
-          value={formData.otroNombre}
-          onChange={handleChange}
-          error={localErrors.otroNombre}
-          placeholder="Nombre completo del receptor"
+      <div className="bg-gray-200 p-4 rounded-sm">
+        <Select
+          id="entregueConforme"
+          label="Entregue Conforme"
+          value={formData.entregueConforme}
+          onChange={(e) =>
+            handleChange({
+              target: { id: "entregueConforme", value: e.target.value },
+            })
+          }
+          options={[
+            ...users.map(
+              (user) => `${user.grado} ${user.nombre} ${user.apellidoPaterno}`,
+            ),
+            "Otro",
+          ]}
         />
-      )}
-      <h1>Es conforme</h1>
+        {formData.entregueConforme === "Otro" && (
+          <Input
+            id="otroNombre"
+            label="Nombre del receptor"
+            value={formData.otroNombre}
+            onChange={(e) =>
+              handleChange({
+                target: { id: "otroNombre", value: e.target.value },
+              })
+            }
+            error={localErrors.otroNombre}
+            placeholder="Nombre completo del receptor"
+          />
+        )}
+      </div>
+
       <div>
         {encargados.map((encargado) => (
           <div
@@ -329,8 +342,9 @@ const FormActaRegister = ({
               type="checkbox"
               id={encargado.id}
               name={encargado.id}
-              value={encargado.id}
-              className="form-checkbox h-5 w-5 text-blue-600 rounded focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              checked={!!includedEncargados[encargado.id]}
+              onChange={() => handleCheckboxChange(encargado.id)}
+              className="form-checkbox h-5 w-5 text-blue-600 rounded"
             />
             <div className="flex flex-col">
               <label
@@ -344,17 +358,10 @@ const FormActaRegister = ({
           </div>
         ))}
       </div>
+
       <div className="flex justify-end space-x-2">
-        <Button
-          text="Cancelar"
-          textStyle="bg-gray-300 text-black px-4 py-2 rounded-md"
-          onClick={onCancel}
-        />
-        <Button
-          text="Registrar Acta"
-          textStyle="bg-blue-500 text-white px-4 py-2 rounded-md"
-          onClick={handleGeneratePDF}
-        />
+        <Button text="Cancelar" onClick={onCancel} />
+        <Button text="Registrar Acta" onClick={handleGeneratePDF} />
       </div>
     </form>
   );

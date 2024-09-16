@@ -1,0 +1,83 @@
+{
+  "ci":"12421511",  
+  "extension":"La Paz",  
+  "grado":"ViceAlmirante",  
+  "especialidad":"CGON.",  
+  "nombre":"Jorge Luis",  
+  "apellidoPaterno":"Tancara",  
+  "apellidoMaterno":"Nina",  
+  "cm":"12421511",  
+  "correo":"admin@admin.com",  
+  "inSystemPermission":"Si",  
+  "rol":"Administrador",  
+  "estado":"Activo",  
+  "password":"adminadmin",  
+}
+
+{
+  "ci": {
+    "aes_encrypted_data": "pDkqyT60ZDY=",
+    "rsa_encrypted_key": "ZZVf+Zq6JC017E3q6LdOxkvyfSa4QLpwUn9vvFe0NaeTpjMvz2ZmemoNY27znOvDMr7DSk8AWXWab9RMgTsuDjFClz5hdwLT013UDhv7Frnn/Glvmeu6j0v3RLbfHhCRViR2/yn8xl+XePAuicYwr1g4VtzG3lrRse76KiXSYb7ACTTXNJF67ezUjjiuIds76Ka2VBUbsAXWQI6gw3WvXl2LQo1m5Tme8I57LNEW1pr9fzMYCAk6UTH0fzaAIxQYAJSHeQ3tfuicCN0iZXPasL8PGCTEFEHg3v6pItlzNrk+ImS1WYO4sEFRAyBPmrN/BQMpQDTJCgqqq8eLklepwQ==",
+    "iv": "gt+vxbsvO1UuyTnnt/Aq5Q=="
+  },
+  "extension": {
+    "aes_encrypted_data": "2Wo+q277",
+    "rsa_encrypted_key": "XVXNoN+aDiktALGHQamDQ9aA+Te5GAJJGIA8q/r7I3k9/6HengrczBw0cKnuMpXktRLJ3qBKWdf+SsHLPspIAnSZhqnkcl/wk9+jn3H2Qwc5oYrhHfVH9kMq1ms0Jeo7fS67XWepvMwOFQ2Np26EmRUCI0StsgZxLu4g4786ESqy4xKEvbuf19o/9tdtHPy/OIFF9/M/OIfsnxhwpP+yHyFatWW9P2ywLqbFLrjnbLQ3dYP+Wip7RaRuXa1e9VLjGHod0hf7/X2yqQgohFGxsKEBWM9rIU9kgcvyAn9B8q0SBvFXlMNPR4NbiZs8xYBWJqpCk5xwggA8ycZTHgY70A==",
+    "iv": "gt+vxbsvO1UuyTnnt/Aq5Q=="
+  },
+  "grado": {
+    "aes_encrypted_data": "w2J9nk7tOG5OjcxImQ==",
+    "rsa_encrypted_key": "fQSvqm+GsSwXqqIoOxEDJGvDKRlIirCfiqsXlpjdPUiIYyAeIWUnakxixRb8G/bWDMCr0Kz8mJj6rcULQABbFWVpz6YNFq1lyqNrUQYMFSp5bXuu19k/KOnxowTplw3+Fg/S2NP8zwCsWGHtG0b/OC1j8Y+Zzf6zSnpCYwwXBxLHOQYe6L8Z+Nz6TAGylOpBdHpTpEA3ZjE4waqi5tCiTgVhTz0ZcT2CqF/p7G6RPfoTUchB+hWoDTDjjDlYvskOtha1DbVDF/Ypw5zMHaonhubreGVLlsamjKfVIcUSAl5WNY0rQb8JxuyZMCz+RMWKzanRz1Nqg1TIRcjtd11fPg==",
+    "iv": "gt+vxbsvO1UuyTnnt/Aq5Q=="
+  },
+  "especialidad": {
+    "aes_encrypted_data": "1kxRtSE=",
+    "rsa_encrypted_key": "AEi44WaSgKzCi6c5HRIrQINgnUlorr8DL0Dhr6E1HaSYqJTgtlbrMWP3aJ3o9yyLFgyYJbz+DhI0uyAlFMgHTjcF6KipZTqd58BDsCiku7Wv8SvxaqoMl0AQ31rxr2ysTnj/k/ojNmsJdxeuaJeaw/cAF5O3sce21JWBeRgM4NGAlA7kJ9d5cieFTo6Rf5fCSDFDtvJtnK9w0ZbBgaAjEISvZrVcQ2I2VLC/qG4r6J2uZj8BPyWxbrN+RnOHQWgaQ2X5zWMVx5E+jt3aGeL7Lg2L9DD3NjcBxZY2e45d6z1/7L38S1SNIUqwWHIdCGYRMLg/90svVNds/Dh+MwItOQ==",
+    "iv": "gt+vxbsvO1UuyTnnt/Aq5Q=="
+  },
+  "nombre": {
+    "aes_encrypted_data": "32RsnGqhGXJVnw==",
+    "rsa_encrypted_key": "EGApRN8McHvjg0h/2JZ67aarXN6Em5knG8re4PNefXF7deBNHmACLiCSVKEFpvip5ZvqRUi6yDHpaVhF4pid7N1DUscnjGRHH+q9LKyOPUmRc5BWqnHUGJbQ9Pzvrazi4D9oITbR7Fxu1x5O4Gy7rdridYLjCbfFgoCBUVjlgszvUnvaCM7J3JiFSxCi6yjXMfYVpTe+CtptHghUfLFafIRK1vtyC08fI4UDGWoDShx/qF0jKr2JmQXSy1QQ5qEcCvSksB1s7qIIxC+Cj7vVycpbP941gaZr5xC17VeJwxQPKeB7KFxCkaebIR8xoxm2lfyFRYVXFTNFUAzpdQ6eCA==",
+    "iv": "gt+vxbsvO1UuyTnnt/Aq5Q=="
+  },
+  "apellidoPaterno": {
+    "aes_encrypted_data": "wWpwmG7zNA==",
+    "rsa_encrypted_key": "em56kz6TTetVrpBMCsNHGVAGCvx9Lgin4bsiJMhGgdA1zpJ3P2gH9vlpagVG0Ijx24K7Rw/MQtPAmXNu2nnb/ESby7spgjOTTDg3FUWXkQipmdr60oScDaIAtv5iGcbSGjbnwU/w7mu96Cur5dQGHTXQBRqjrJfZtwtIX3997MyV/2QCO959PxiELCR7JiwZZRaZUPdO2WpM4QSAqMuPiXltFHvUdqJPjr4//aS5ly0+Y29jbMVO6YFmbxbLL0c6fAOYkDDb0aM//kkDlipue4jz6f42uwGxxobiAJ0egu0lB2VNCHGhOjmkJa7EOoWG6h9WhZQxGdHbEp9OC08jWA==",
+    "iv": "gt+vxbsvO1UuyTnnt/Aq5Q=="
+  },
+  "apellidoMaterno": {
+    "aes_encrypted_data": "22Jwmg==",
+    "rsa_encrypted_key": "AZrGlKxm64iYyJgBzip4E4YiIOceRASMUD5SeDdiAOzv6Z+NtgkN4e8jbE3I0bSk7w8Y9jqZaEMF+mL6fxFISHIoKb1buMWXH64HrLc4+xguUBihdoPqykgpKPhk2svSHeqAO/bpVGUH+EJtuBb3Pv98kH/AYHb9PXTVJjPqqrzd5UqOoeap6rphalFFo1DL6FKFwfMgf5LjbkUIFIzUb4jw2roMWeRsJ285LfyM0vkQnbZ3zZOsfddy448r3TNzY1OVFna6wfhg661McpLCRMlnS5uaHEqcpnrjq/Mm/HgD0x1iXMvSwRtvNPe/EUtSMcWBqE6GcA/kYoxH/wN5rQ==",
+    "iv": "gt+vxbsvO1UuyTnnt/Aq5Q=="
+  },
+  "cm": {
+    "aes_encrypted_data": "pDkqyT60ZDY=",
+    "rsa_encrypted_key": "fLaXb+1QvIkWIyaOOgQMjJ11CPLnO/tV3TSm2dBENjz5bGBgcN3XzWlaPiYzHITGChwpJobNdlB7VajASN5J1G6YAC9Se454i6/8yoIex6lWPYkt5QTh5HjfRhUn4K7sVWdRxCIjdV67hGK/i+KBRTOaNiFVE31j1AQDZbvZ0Uu0thrIP7RndudFSmYugA0JxXBakiWunaeGi8S1vgkY1TF1Ovnd+KnQ1ueH438HAmgXoKCSgK5YmAzDkWflfkEQE29K6TNCzfWRJGkwXLXOsSnuSirDgf4Bcn8hlSjuAAsGkhr6UCL3HjDiVKi+VeV6nL7e++nvK56BVJCZtwc8SA==",
+    "iv": "gt+vxbsvO1UuyTnnt/Aq5Q=="
+  },
+  "correo": {
+    "aes_encrypted_data": "9G9zkmHBNGNRhcwSn1EY",
+    "rsa_encrypted_key": "TqvrUf4+C+SUHk9UTw33kDqUDaPooQV8eUTs4MlXIhtnr1SEDOJfuQGcklrS3rinm35LvlblSt9i2R2pT97v4yMvnyr4VqeTJnVQlNq0LVhnw3mVg+tEWjsHisZN2GvRL/c371jTTFMyuPLGW96rgCL2R9QVX2TUQZXV/SKwlwM3xVsGEdDVoT39dH0xzaPyr+BsFvWkbMAz0X+AIaHMI8K0U3tVd6LWXgEyGXfQPvVrHTBPQaKqfdWysyTlOgJx40Zg2ap02xz+uJo/50SrqEAkNT7bikRxpqJ7RDUKpWQK3aZNWKQTLAUisKo0T/qtbqsccZBKpdjqWdMbt4UKyQ==",
+    "iv": "gt+vxbsvO1UuyTnnt/Aq5Q=="
+  },
+  "inSystemPermission": {
+    "aes_encrypted_data": "xmI=",
+    "rsa_encrypted_key": "B2VpRZ/mHV1ZAso5TXWNa0XmQSj4j9dRc653UwywDKQ+Eg7k1YYlPfUwVFozcu3/zVZwvs7uoM48dXMaD+CaOc4SH0zbwBjtF3nYlviekUE3eRMj4yROi0QDGiGwj6ezOlVL6/e+B3XyFQGdDkjDRKeRu2uFk0XzyyQkfTowRARkRzJsZJgvmKtrbMJRqoh3BNuIK1ediGv9H+Mr0Dk6UZI4r1XLoLxIjVg3j3my0HiIaIBt3odRqMv4IBoCDX1TzWZkHJ98wS2UG44n8I0I9r770Jfo/PNHa6WnMRlJOzWQqkPkEMq2D50w0KPkY18QnEhYLzuxETpZbC90YGQT2g==",
+    "iv": "gt+vxbsvO1UuyTnnt/Aq5Q=="
+  },
+  "rol": {
+    "aes_encrypted_data": "1G9zkmHoJnNOjcZTjg==",
+    "rsa_encrypted_key": "WYlf5xIFGrbbLJ/CkC0++48v2yaPsAaK+1X0nonGZQ98KyHgNgvKpCOwXZCrX6RS+vf4HwNSX8W384NRFKHYIs1k0PhC/aPuVgxF/IspGC9fNc1oplJ0p7rtNM/zsx0cNSa8VsPwWQWsqNfp07LuX41vT3ucifM86h/L6KFk3+lXKfr7M/nxTxxeu6AihfX4NtukGAMben1vas/gAUOoZH/3ltFr38e7rXS7qcS+dV5Rdoejx0GMfH/Sww1Hz9nVlp7JIzhoX8lWGIGCA0sU0qiitVR5vDaGfixFpbxOCmhwqL5efCV28/VxltihOCa+m6rUQEU4qRMWC9gdsuLaIw==",
+    "iv": "gt+vxbsvO1UuyTnnt/Aq5Q=="
+  },
+  "estado": {
+    "aes_encrypted_data": "1Ghqknnu",
+    "rsa_encrypted_key": "RiW3DIe/+JLe155/zGjJj7A/oO4+qmVIQe6Y7Feqw7yofOijoUiI0VbGVYv3FY/k8SzGIQvMMUFRgw+kTNeGK3R74KGuilzCBP9RUa51ooSQ0atjckLFUSMh3jWJpePvxuY+A2N7dvY2glvJgFrXipv1mSBpDuZiPEDUWCcNc6Kkasi83iL+dPaF8xw460YzVseON4B9ktvgGfT3DcvgTlI3yBMA8sSKsfgr60aJPzrRXuyCh88L+iijcdsQLzPjP0yTbEnSJQG1cr7MS/BWZmRT2TahxlG2lYPJ98k9A52tuCInVgUDLxwyWy95PSUfNHV9Hf9RccCWWiFtrwbXtw==",
+    "iv": "gt+vxbsvO1UuyTnnt/Aq5Q=="
+  },
+  "password": {
+    "aes_encrypted_data": "9G9zkmHgMWpVgg==",
+    "rsa_encrypted_key": "DLe55fX5rO6J/u3Dt2Ij63+VoqnoVi57cpn11N3mL72nzoCshmU1ZKvBYPMR/cfv4m7hhtdNs9bm3JWYCZtqVmnSkbqtGk4UMxJs2UxYzQVadE0asp2dsDMZUayUbzcKhdKk2b7eh0hz0FQo+QCYyvT5K+19XUgESngegdXPbq4AC4RO0l0K40SOH2K8ges6EE7Bb94/ART9jwZS3lpAAax+mTUxXho4+oPRk+U8EoVcpLG27HTT0i62Zoohyai8YJQNFKbHxvsUb6NqQ31+ua0CB5pv053r8oWa8Nur76AuWONvGcd49F3r9mbjlSW5AkUk4AhCiYr6wPmGQCerxQ==",
+    "iv": "gt+vxbsvO1UuyTnnt/Aq5Q=="
+  }
+}

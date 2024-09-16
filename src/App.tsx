@@ -21,6 +21,10 @@ const router = createBrowserRouter([
     element: <InsertPrivateKey />,
   },
   {
+    path: "example",
+    element: <Example />,
+  },
+  {
     path: "/login",
     element: <PublicRoute />,
     children: [
@@ -74,10 +78,7 @@ const router = createBrowserRouter([
         path: "extraer-datos",
         element: <ExtraerDatos />,
       },
-      {
-        path: "example",
-        element: <Example />,
-      },
+
       {
         path: "reportes-personal",
         element: <ReportesPersonal />,

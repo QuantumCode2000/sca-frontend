@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, ReactNode } from "react";
 import Table from "../../components/Table/Table";
 import { headerMovimientos } from "../../data/headers";
 import { useMovements } from "../../contexts/MovementsContext/MovementsContext";
@@ -9,18 +9,39 @@ import Button from "../../components/Button/Button";
 import ButtonIcon from "../../components/ButtonIcon/ButtonIcon";
 import { TbLayoutBottombarExpand } from "react-icons/tb";
 import { headersUsers } from "../../data/headers";
-import { useUsers } from "../../contexts/UsersContext/UsersContext";
+import { useUsers, User } from "../../contexts/UsersContext/UsersContext";
 import ViewMore from "../../components/ViewMore/ViewMore";
 import { headersWeapons } from "../../data/headers";
-import { useWeapons } from "../../contexts/WeaponsContext/WeaponsContext";
+import {
+  useWeapons,
+  Weapon,
+} from "../../contexts/WeaponsContext/WeaponsContext";
+import type { Movement } from "../../contexts/MovementsContext/interfaces";
 
-const WeaponMovementHistory = () => {
+// Definir las claves que pueden ser usadas como índices para `Movement`
+type MovementKeys = keyof Movement;
+
+interface FormData {
+  movementId: string;
+  actaType: string;
+  entregueConforme: string;
+  otroNombre: string;
+}
+
+const WeaponMovementHistory: React.FC = () => {
   const { movements, updateMovement } = useMovements();
   const { weapons } = useWeapons();
   const { users } = useUsers();
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalContent, setModalContent] = useState<React.ReactNode>(null);
-  const [modalTitle, setModalTitle] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [modalContent, setModalContent] = useState<ReactNode>(null);
+  const [modalTitle, setModalTitle] = useState<string>("");
+
+  const [formData, setFormData] = useState<FormData>({
+    movementId: "",
+    actaType: "",
+    entregueConforme: "",
+    otroNombre: "",
+  });
 
   const closeModal = useCallback(() => {
     setIsModalOpen(false);
@@ -28,48 +49,48 @@ const WeaponMovementHistory = () => {
     setModalTitle("");
   }, []);
 
-  const openModal = useCallback((title: string, content: React.ReactNode) => {
+  const openModal = useCallback((title: string, content: ReactNode) => {
     setModalTitle(title);
     setModalContent(content);
     setIsModalOpen(true);
   }, []);
 
   const handleActaClick = useCallback(
-    (movement, type) => {
-      if (type === "Regreso" && movement.fechaRegreso === "Pendiente") {
-        openModal("Error", <p>Primero debes registrar la entrada del arma.</p>);
-      } else {
-        const formData = {
-          movementId: movement.id,
-          actaType: type,
-          details: "",
-        };
-        openModal(
-          "Registrar Acta",
-          <FormActaRegister
-            formData={formData}
-            handleChange={(e) => {
-              const { id, value } = e.target;
-              setFormData((prevData) => ({ ...prevData, [id]: value }));
-            }}
-            handleSubmit={(actaNumber) => {
-              const updatedMovement = {
-                ...movement,
-                [type === "Salida" ? "actaSalida" : "actaRegreso"]: actaNumber,
-              };
-              updateMovement(updatedMovement);
-              closeModal();
-            }}
-            onCancel={closeModal}
-          />,
-        );
-      }
+    (movement: Movement, type: string) => {
+      const formDataInitial: FormData = {
+        movementId: movement.id,
+        actaType: type,
+        entregueConforme: "",
+        otroNombre: "",
+      };
+
+      setFormData(formDataInitial);
+
+      openModal(
+        "Registrar Acta",
+        <FormActaRegister
+          formData={formDataInitial}
+          handleChange={(e) => {
+            const { id, value } = e.target;
+            setFormData((prevData) => ({ ...prevData, [id]: value }));
+          }}
+          handleSubmit={(actaNumber: string) => {
+            const updatedMovement = {
+              ...movement,
+              [type === "Salida" ? "actaSalida" : "actaRegreso"]: actaNumber,
+            };
+            updateMovement(updatedMovement);
+            closeModal();
+          }}
+          onCancel={closeModal}
+        />,
+      );
     },
     [openModal, updateMovement, closeModal],
   );
 
   const handleViewText = useCallback(
-    (text) => {
+    (text: string) => {
       openModal("Detalles", <p>{text}</p>);
     },
     [openModal],
@@ -77,7 +98,7 @@ const WeaponMovementHistory = () => {
 
   const handleViewMoreArmaInfo = useCallback(
     (codigo: string) => {
-      const weapon = weapons.find((weapon) => weapon.codigo === codigo);
+      const weapon = weapons.find((weapon: Weapon) => weapon.codigo === codigo);
       if (weapon) {
         openModal(
           "Detalles del Arma",
@@ -90,7 +111,7 @@ const WeaponMovementHistory = () => {
 
   const handleViewMoreSolicitanteInfo = useCallback(
     (ci: string) => {
-      const user = users.find((user) => user.ci === ci);
+      const user = users.find((user: User) => user.ci === ci);
       if (user) {
         openModal(
           "Detalles del Solicitante",
@@ -101,8 +122,9 @@ const WeaponMovementHistory = () => {
     [users, openModal],
   );
 
+  // Aseguramos que `key` es un valor válido de las propiedades de `Movement`
   const renderCell = useCallback(
-    (item, key) => {
+    (item: Movement, key: MovementKeys) => {
       switch (key) {
         case "actaSalida":
         case "actaRegreso":
@@ -144,6 +166,7 @@ const WeaponMovementHistory = () => {
               />
             </div>
           );
+
         case "solicitante":
           const summaryTextCI =
             item[key].length > 10 ? `${item[key].slice(0, 10)}...` : item[key];
@@ -189,7 +212,9 @@ const WeaponMovementHistory = () => {
         <Table
           header={headerMovimientos}
           body={movements}
-          renderCell={(item, key) => <div>{renderCell(item, key)}</div>}
+          renderCell={(item, key) => (
+            <div>{renderCell(item, key as MovementKeys)}</div>
+          )}
         />
       </Content>
       <Modal title={modalTitle} isOpen={isModalOpen} onClose={closeModal}>
