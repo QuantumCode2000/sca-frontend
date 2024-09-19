@@ -11,19 +11,48 @@ import { useMovements } from "../../contexts/MovementsContext/MovementsContext";
 import { actaTypes } from "../../data/selectOptions";
 
 const FormActaRegister = ({
-  formData,
-  handleChange,
+  movementInformation,
   onCancel,
-  handleSubmit,
+  onActaGenerated,
 }) => {
   const [localErrors, setLocalErrors] = useState({});
   const { users } = useUsers();
   const { encargados } = useActas();
   const { weapons } = useWeapons();
   const { movements } = useMovements();
-
-  // State to track which encargados will be included in the PDF
-  const [includedEncargados, setIncludedEncargados] = useState({});
+  const [tipoActa, setTipoActa] = useState("");
+  const [entregueConforme, setEntregueConforme] = useState("");
+  const [recibiConforme, setRecibiConforme] = useState("");
+  const [otroEntregeConforme, setOtroEntregueConforme] = useState("");
+  const [otroRecibiConforme, setOtroRecibiConforme] = useState("");
+  const [encargado1, setEncargado1] = useState(
+    encargados.find((e) => e.id === 1),
+  );
+  const [encargado2, setEncargado2] = useState(
+    encargados.find((e) => e.id === 2),
+  );
+  const [encargado3, setEncargado3] = useState(
+    encargados.find((e) => e.id === 3),
+  );
+  const [encargado4, setEncargado4] = useState(
+    encargados.find((e) => e.id === 4),
+  );
+  const [encargado1Included, setEncargado1Included] = useState(false);
+  const [encargado2Included, setEncargado2Included] = useState(false);
+  const [encargado3Included, setEncargado3Included] = useState(false);
+  const [encargado4Included, setEncargado4Included] = useState(false);
+  console.log("encargado1Included", encargado1Included);
+  console.log("encargado2Included", encargado2Included);
+  console.log("encargado3Included", encargado3Included);
+  console.log("encargado4Included", encargado4Included);
+  console.log("encargado1", encargado1);
+  console.log("encargado2", encargado2);
+  console.log("encargado3", encargado3);
+  console.log("encargado4", encargado4);
+  console.log("Entregue Conforme", entregueConforme);
+  console.log("Recibi Conforme", recibiConforme);
+  console.log("Otro Entregue Conforme", otroEntregeConforme);
+  console.log("Otro Recibi Conforme", otroRecibiConforme);
 
   const findWeapon = (codigo) => {
     const tableHeaders = [
@@ -40,11 +69,6 @@ const FormActaRegister = ({
 
   const validateForm = () => {
     const errors = {};
-    if (!formData.movementId) errors.movementId = "Movimiento ID es requerido";
-    if (!formData.actaType) errors.actaType = "Tipo de Acta es requerido";
-    if (formData.entregueConforme === "Otro" && !formData.otroNombre) {
-      errors.otroNombre = "Debe proporcionar un nombre si selecciona 'Otro'";
-    }
     setLocalErrors(errors);
     return errors;
   };
@@ -82,8 +106,6 @@ const FormActaRegister = ({
         .toString()
         .slice(-2)}`;
 
-      console.log("Datos del formulario:", formData);
-
       doc.setFontSize(10);
       doc.text("ARMADA BOLIVIANA", 30, 20);
       doc.text("DEPARTAMENTO IV LOGÍSTICA", 20, 25);
@@ -117,10 +139,14 @@ const FormActaRegister = ({
 
       doc.setFontSize(12);
       const text = `En la ciudad de La Paz, a horas ${formattedTime} del día ${formattedDay}, en instalaciones del Comando General de la Armada Boliviana, Departamento IV - Logística del EMGAB., División “C” Material Bélico, y en presencia de los suscritos se procedió a la entrega y recepción del Armamento de Dotación Individual perteneciente al Sr. ${
-        formData.entregueConforme || formData.otroNombre
-      }, en calidad de custodia por ${
-        formData.actaType
-      } del mencionado con el siguiente detalle:`;
+        entregueConforme === encargado1?.nombre
+          ? recibiConforme === "Otro"
+            ? otroRecibiConforme
+            : recibiConforme
+          : entregueConforme === "Otro"
+          ? otroEntregeConforme
+          : entregueConforme
+      }, en calidad de custodia por ${tipoActa} del mencionado con el siguiente detalle:`;
       doc.text(text, 20, 55, { maxWidth: 170, align: "justify" });
 
       const tableColumn = [
@@ -133,7 +159,7 @@ const FormActaRegister = ({
       ];
 
       const movementCode = movements.find(
-        (m) => m.id === formData.movementId,
+        (m) => m.id === movementInformation.id,
       )?.codigo;
       const tableRows = [[...findWeapon(movementCode)]];
 
@@ -187,95 +213,127 @@ const FormActaRegister = ({
       doc.setFontSize(12);
       const eC = doc.getTextWidth("ENTREGUE CONFORME:");
       const rC = doc.getTextWidth("RECIBÍ CONFORME:");
-      doc.text(
-        "ENTREGUE CONFORME:",
-        positions[0].x - eC / 2,
-        doc.autoTable.previous.finalY + 20,
-      );
-      doc.text(
-        "RECIBÍ CONFORME:",
-        positions[1].x - rC / 2,
-        doc.autoTable.previous.finalY + 20,
-      );
-      doc.text(
-        formData.entregueConforme || formData.otroNombre,
-        positions[0].x -
-          doc.getTextWidth(formData.entregueConforme || formData.otroNombre) /
+
+      if (encargado1?.nombre === entregueConforme) {
+        doc.text(
+          "ENTREGUE CONFORME:",
+          positions[1].x - eC / 2,
+          doc.autoTable.previous.finalY + 20,
+        );
+        doc.text(
+          encargado1.nombre,
+          positions[1].x - doc.getTextWidth(encargado1.nombre) / 2,
+          doc.autoTable.previous.finalY + 50,
+        );
+        doc.text(
+          encargado1.cargo,
+          positions[1].x - doc.getTextWidth(encargado1.cargo) / 2,
+          doc.autoTable.previous.finalY + 55,
+        );
+        doc.text(
+          "RECIBÍ CONFORME:",
+          positions[0].x - rC / 2,
+          doc.autoTable.previous.finalY + 20,
+        );
+        doc.text(
+          recibiConforme || otroRecibiConforme,
+          positions[0].x -
+            doc.getTextWidth(recibiConforme || otroRecibiConforme) / 2,
+          doc.autoTable.previous.finalY + 50,
+        );
+        doc.text(
+          "C.I. ......................................",
+          positions[0].x -
+            doc.getTextWidth("C.I. ......................................") / 2,
+          doc.autoTable.previous.finalY + 55,
+        );
+      }
+
+      if (encargado1?.nombre === recibiConforme) {
+        doc.text(
+          "RECIBÍ CONFORME:",
+          positions[0].x - rC / 2,
+          doc.autoTable.previous.finalY + 20,
+        );
+        doc.text(
+          encargado1.nombre,
+          positions[0].x - doc.getTextWidth(encargado1.nombre) / 2,
+          doc.autoTable.previous.finalY + 50,
+        );
+        doc.text(
+          encargado1.cargo,
+          positions[0].x - doc.getTextWidth(encargado1.cargo) / 2,
+          doc.autoTable.previous.finalY + 55,
+        );
+        doc.text(
+          "ENTREGUE CONFORME:",
+          positions[1].x - eC / 2,
+          doc.autoTable.previous.finalY + 20,
+        );
+        doc.text(
+          entregueConforme || otroEntregeConforme,
+          positions[1].x -
+            doc.getTextWidth(entregueConforme || otroEntregeConforme) / 2,
+          doc.autoTable.previous.finalY + 50,
+        );
+        doc.text(
+          "C.I. ......................................",
+          positions[1].x -
+            doc.getTextWidth("C.I. ......................................") / 2,
+          doc.autoTable.previous.finalY + 55,
+        );
+      }
+
+      if (encargado2Included === true) {
+        doc.text(
+          encargado2.nombre,
+          positions[0].x - doc.getTextWidth(encargado2.nombre) / 2,
+          doc.autoTable.previous.finalY + 90,
+        );
+        doc.text(
+          encargado2.cargo,
+          positions[0].x - doc.getTextWidth(encargado2.cargo) / 2,
+          doc.autoTable.previous.finalY + 95,
+        );
+      }
+
+      if (encargado3Included === true) {
+        doc.text(
+          encargado3.nombre,
+          positions[1].x - doc.getTextWidth(encargado3.nombre) / 2,
+          doc.autoTable.previous.finalY + 90,
+        );
+        doc.text(
+          encargado3.cargo,
+          positions[1].x - doc.getTextWidth(encargado3.cargo) / 2,
+          doc.autoTable.previous.finalY + 95,
+        );
+      }
+
+      if (encargado4Included === true) {
+        doc.text(
+          encargado4.nombre,
+          (doc.internal.pageSize.getWidth() -
+            doc.getTextWidth(encargado4.nombre)) /
             2,
-        doc.autoTable.previous.finalY + 50,
-      );
-      doc.text(
-        "C.I. ......................................",
-        positions[0].x -
-          doc.getTextWidth("C.I. ......................................") / 2,
-        doc.autoTable.previous.finalY + 55,
-      );
-      doc.text(
-        encargados[0].nombre || formData.otroNombre,
-        positions[1].x -
-          doc.getTextWidth(encargados[0].nombre || formData.otroNombre) / 2,
-        doc.autoTable.previous.finalY + 50,
-      );
-      doc.text(
-        encargados[0].cargo,
-        positions[1].x - doc.getTextWidth(encargados[0].cargo) / 2,
-        doc.autoTable.previous.finalY + 55,
-      );
+          doc.autoTable.previous.finalY + 130,
+        );
+        doc.text(
+          encargado4.cargo,
+          (doc.internal.pageSize.getWidth() -
+            doc.getTextWidth(encargado4.cargo)) /
+            2,
+          doc.autoTable.previous.finalY + 135,
+        );
+      }
 
-      doc.text(
-        encargados[1].nombre || formData.otroNombre,
-        positions[0].x -
-          doc.getTextWidth(encargados[1].nombre || formData.otroNombre) / 2,
-        doc.autoTable.previous.finalY + 90,
-      );
-      doc.text(
-        encargados[1].cargo || formData.otroNombre,
-        positions[0].x -
-          doc.getTextWidth(encargados[1].cargo || formData.otroNombre) / 2,
-        doc.autoTable.previous.finalY + 95,
-      );
-
-      doc.text(
-        encargados[2].nombre || formData.otroNombre,
-        positions[1].x -
-          doc.getTextWidth(encargados[2].nombre || formData.otroNombre) / 2,
-        doc.autoTable.previous.finalY + 90,
-      );
-      doc.text(
-        encargados[2].cargo,
-        positions[1].x - doc.getTextWidth(encargados[2].cargo) / 2,
-        doc.autoTable.previous.finalY + 95,
-      );
-
-      doc.text(
-        encargados[3].nombre || formData.otroNombre,
-        (doc.internal.pageSize.getWidth() -
-          doc.getTextWidth(encargados[3].nombre)) /
-          2,
-        doc.autoTable.previous.finalY + 130,
-      );
-      doc.text(
-        encargados[3].cargo || formData.otroNombre,
-        (doc.internal.pageSize.getWidth() -
-          doc.getTextWidth(encargados[3].cargo)) /
-          2,
-        doc.autoTable.previous.finalY + 135,
-      );
-
-      doc.save(`Acta_${formData.movementId}.pdf`);
+      doc.save(`Acta_${movementInformation.id}.pdf`);
       console.log("PDF generado y guardado con éxito.");
 
-      handleSubmit(randomNum);
+      onActaGenerated(randomNum);
     } catch (error) {
       console.error("Error al generar el PDF:", error);
     }
-  };
-
-  const handleCheckboxChange = (id) => {
-    setIncludedEncargados((prev) => ({
-      ...prev,
-      [id]: !prev[id],
-    }));
   };
 
   return (
@@ -283,80 +341,161 @@ const FormActaRegister = ({
       <Select
         id="actaType"
         label="Tipo de Acta"
-        value={formData.actaType}
-        onChange={(e) =>
-          handleChange({ target: { id: "actaType", value: e.target.value } })
-        }
+        value={tipoActa}
+        onChange={(e) => setTipoActa(e.target.value)}
         options={actaTypes}
-        error={localErrors.actaType}
       />
       <Input
         id="movementId"
         label="Movimiento ID"
-        value={formData.movementId}
-        onChange={handleChange}
+        value={movementInformation.id}
+        onChange={"/"}
         readOnly
-        error={localErrors.movementId}
       />
 
       <div className="bg-gray-200 p-4 rounded-sm">
         <Select
           id="entregueConforme"
           label="Entregue Conforme"
-          value={formData.entregueConforme}
-          onChange={(e) =>
-            handleChange({
-              target: { id: "entregueConforme", value: e.target.value },
-            })
-          }
+          value={entregueConforme}
+          onChange={(e) => setEntregueConforme(e.target.value)}
           options={[
-            ...users.map(
-              (user) => `${user.grado} ${user.nombre} ${user.apellidoPaterno}`,
-            ),
             "Otro",
+            ...users.map(
+              (user) =>
+                `${user.grado} ${user.especialidad} ${user.nombre} ${user.apellidoPaterno} ${user.apellidoMaterno}`,
+            ),
           ]}
         />
-        {formData.entregueConforme === "Otro" && (
+        {entregueConforme === "Otro" && (
           <Input
             id="otroNombre"
             label="Nombre del receptor"
-            value={formData.otroNombre}
-            onChange={(e) =>
-              handleChange({
-                target: { id: "otroNombre", value: e.target.value },
-              })
-            }
-            error={localErrors.otroNombre}
+            value={otroEntregeConforme}
+            onChange={(e) => setOtroEntregueConforme(e.target.value)}
+            placeholder="Nombre completo del receptor"
+          />
+        )}
+      </div>
+
+      <div className="bg-gray-200 p-4 rounded-sm">
+        <Select
+          id="recibiConforme"
+          label="Recibi Conforme"
+          value={recibiConforme}
+          onChange={(e) => setRecibiConforme(e.target.value)}
+          options={[
+            "Otro",
+            ...users.map(
+              (user) =>
+                `${user.grado} ${user.especialidad} ${user.nombre} ${user.apellidoPaterno} ${user.apellidoMaterno}`,
+            ),
+          ]}
+        />
+        {recibiConforme === "Otro" && (
+          <Input
+            id="otroNombre"
+            label="Nombre del receptor"
+            value={otroRecibiConforme}
+            onChange={(e) => setOtroRecibiConforme(e.target.value)}
             placeholder="Nombre completo del receptor"
           />
         )}
       </div>
 
       <div>
-        {encargados.map((encargado) => (
-          <div
-            key={encargado.id}
-            className="flex items-center space-x-4 p-2 bg-gray-50 rounded-lg shadow-sm"
-          >
-            <input
-              type="checkbox"
-              id={encargado.id}
-              name={encargado.id}
-              checked={!!includedEncargados[encargado.id]}
-              onChange={() => handleCheckboxChange(encargado.id)}
-              className="form-checkbox h-5 w-5 text-blue-600 rounded"
-            />
-            <div className="flex flex-col">
-              <label
-                htmlFor={encargado.id}
-                className="text-gray-800 font-medium"
-              >
-                {encargado.nombre}
-              </label>
-              <span className="text-sm text-gray-600">{encargado.cargo}</span>
-            </div>
+        <div
+          key={encargado1?.id}
+          className="flex items-center space-x-4 p-2 bg-gray-50 rounded-lg shadow-sm"
+        >
+          <input
+            type="checkbox"
+            id={encargado1?.id}
+            name={encargado1?.id}
+            onChange={() => setEncargado1Included(!encargado1Included)}
+            className="form-checkbox h-5 w-5 text-blue-600 rounded"
+          />
+          <div className="flex flex-col">
+            <label
+              htmlFor={encargado1?.id}
+              className="text-gray-800 font-medium"
+            >
+              {encargado1?.nombre}
+            </label>
+            <span className="text-sm text-gray-600">{encargado1?.cargo}</span>
           </div>
-        ))}
+        </div>
+      </div>
+
+      <div>
+        <div
+          key={encargado2?.id}
+          className="flex items-center space-x-4 p-2 bg-gray-50 rounded-lg shadow-sm"
+        >
+          <input
+            type="checkbox"
+            id={encargado2?.id}
+            name={encargado2?.id}
+            onChange={() => setEncargado2Included(!encargado2Included)}
+            className="form-checkbox h-5 w-5 text-blue-600 rounded"
+          />
+          <div className="flex flex-col">
+            <label
+              htmlFor={encargado2?.id}
+              className="text-gray-800 font-medium"
+            >
+              {encargado2?.nombre}
+            </label>
+            <span className="text-sm text-gray-600">{encargado2?.cargo}</span>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div
+          key={encargado3?.id}
+          className="flex items-center space-x-4 p-2 bg-gray-50 rounded-lg shadow-sm"
+        >
+          <input
+            type="checkbox"
+            id={encargado3?.id}
+            name={encargado3?.id}
+            onChange={() => setEncargado3Included(!encargado3Included)}
+            className="form-checkbox h-5 w-5 text-blue-600 rounded"
+          />
+          <div className="flex flex-col">
+            <label
+              htmlFor={encargado3?.id}
+              className="text-gray-800 font-medium"
+            >
+              {encargado3?.nombre}
+            </label>
+            <span className="text-sm text-gray-600">{encargado3?.cargo}</span>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div
+          key={encargado4?.id}
+          className="flex items-center space-x-4 p-2 bg-gray-50 rounded-lg shadow-sm"
+        >
+          <input
+            type="checkbox"
+            id={encargado4?.id}
+            name={encargado4?.id}
+            onChange={() => setEncargado4Included(!encargado4Included)}
+            className="form-checkbox h-5 w-5 text-blue-600 rounded"
+          />
+          <div className="flex flex-col">
+            <label
+              htmlFor={encargado4?.id}
+              className="text-gray-800 font-medium"
+            >
+              {encargado4?.nombre}
+            </label>
+            <span className="text-sm text-gray-600">{encargado4?.cargo}</span>
+          </div>
+        </div>
       </div>
 
       <div className="flex justify-end space-x-2">

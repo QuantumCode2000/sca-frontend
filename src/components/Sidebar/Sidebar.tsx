@@ -1,9 +1,14 @@
 import logo_principal from "../../assets/images/logo_principal.png";
 import OptionSidebar from "./OptionSidebar";
 import { useAuth } from "../../contexts/AuthContext/AuthContext"; // Asegúrate de ajustar la ruta si es necesario
-import { options } from "./options";
+import { options, optionsEncargado } from "./options";
 const Sidebar = ({ selectedTitle }) => {
   const { logout } = useAuth(); // Usar el contexto de autenticación para el cierre de sesión
+  // llamando al localstorage item user
+  let user = localStorage.getItem("user");
+  user = JSON.parse(user);
+  console.log(user);
+
   return (
     <aside className="sidebar w-64 md:shadow-right transform -translate-x-full md:translate-x-0 transition-transform duration-150 ease-in bg-[#363a40] flex flex-col justify-between">
       <div>
@@ -19,17 +24,29 @@ const Sidebar = ({ selectedTitle }) => {
         </div>
         <div className="sidebar-content px-4 py-6">
           <ul className="flex flex-col w-full">
-            {options.map((option, index) => (
-              <OptionSidebar
-                key={index}
-                text={option.text}
-                icon={option.icon}
-                to={option.to}
-                isSelected={selectedTitle === option.text}
-                options={option.options}
-                selectedTitle={selectedTitle}
-              />
-            ))}
+            {user.rol === "Encargado"
+              ? optionsEncargado.map((option, index) => (
+                  <OptionSidebar
+                    key={index}
+                    text={option.text}
+                    icon={option.icon}
+                    to={option.to}
+                    isSelected={selectedTitle === option.text}
+                    options={option.options}
+                    selectedTitle={selectedTitle}
+                  />
+                ))
+              : options.map((option, index) => (
+                  <OptionSidebar
+                    key={index}
+                    text={option.text}
+                    icon={option.icon}
+                    to={option.to}
+                    isSelected={selectedTitle === option.text}
+                    options={option.options}
+                    selectedTitle={selectedTitle}
+                  />
+                ))}
           </ul>
         </div>
       </div>
