@@ -1,6 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
 
-// Definimos los tipos de las props para mayor claridad y seguridad de tipos
 interface SelectProps {
   id: string;
   label?: string;
@@ -10,7 +9,7 @@ interface SelectProps {
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => void;
   disabled?: boolean;
-  error?: boolean | string;
+  errorMessage?: string;
   helperText?: string;
   [key: string]: any;
 }
@@ -22,7 +21,7 @@ const Select: React.FC<SelectProps> = ({
   value,
   onChange,
   disabled = false,
-  error = false,
+  errorMessage = "",
   helperText = "",
   ...props
 }) => {
@@ -68,7 +67,7 @@ const Select: React.FC<SelectProps> = ({
     };
   }, []);
 
-  const hasError = !!error; // Convierte cualquier valor truthy en un booleano
+  const hasError = !!errorMessage;
 
   return (
     <div className="mb-4 relative" ref={selectRef}>
@@ -114,12 +113,12 @@ const Select: React.FC<SelectProps> = ({
           </ul>
         </div>
       )}
-      {helperText && (
+      {helperText && !hasError && (
         <p id={`${id}-helper-text`} className="mt-1 text-sm text-gray-500">
           {helperText}
         </p>
       )}
-      {hasError && <p className="mt-1 text-sm text-red-500">{error}</p>}
+      {hasError && <p className="mt-1 text-sm text-red-500">{errorMessage}</p>}
     </div>
   );
 };

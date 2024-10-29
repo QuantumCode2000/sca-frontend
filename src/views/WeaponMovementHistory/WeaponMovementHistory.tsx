@@ -17,7 +17,7 @@ import {
   Weapon,
 } from "../../contexts/WeaponsContext/WeaponsContext";
 import type { Movement } from "../../contexts/MovementsContext/interfaces";
-
+import { useActas } from "../../contexts/ActasContext/ActasContext";
 type MovementKeys = keyof Movement;
 
 interface FormData {
@@ -31,6 +31,7 @@ const WeaponMovementHistory: React.FC = () => {
   const { movements, updateMovement } = useMovements();
   const { weapons } = useWeapons();
   const { users } = useUsers();
+  const { encargados } = useActas();
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [modalContent, setModalContent] = useState<ReactNode>(null);
   const [modalTitle, setModalTitle] = useState<string>("");
@@ -160,9 +161,11 @@ const WeaponMovementHistory: React.FC = () => {
       case "solicitante":
         const summaryTextCI =
           item[key].length > 10 ? `${item[key].slice(0, 10)}...` : item[key];
+        const user = users.find((user: User) => user.ci === item[key]);
         return (
           <div className="flex flex-row">
             <div className="break-words pr-2">{summaryTextCI}</div>
+            <div className="break-words pr-2">{`${user?.nombre} ${user?.apellidoPaterno} ${user?.apellidoMaterno}`}</div>
             <ButtonIcon
               icon={<TbLayoutBottombarExpand />}
               onClick={() => handleViewMoreSolicitanteInfo(item[key])}
@@ -198,10 +201,29 @@ const WeaponMovementHistory: React.FC = () => {
     <>
       <Content>
         <Table
-          header={headerMovimientos}
+          header={{
+            ...headerMovimientos,
+            entregadoPor: "Entregado Por",
+            detalles: "Detalles",
+          }}
           body={movements}
           renderCell={(item, key) => (
-            <div>{renderCell(item, key as MovementKeys)}</div>
+            <div>
+              {key !== "entregadoPor" &&
+                key !== "detalles" &&
+                renderCell(item, key as MovementKeys)}
+              {key === "entregadoPor" && (
+                <div className="flex gap-2">{`
+                  ${encargados[0].cargo} ${encargados[0].nombre} 
+                `}</div>
+              )}
+              {key === "detalles" && (
+                <div className="flex gap-2">{`
+                  ${item.observaciones}
+                  
+                  `}</div>
+              )}
+            </div>
           )}
         />
       </Content>

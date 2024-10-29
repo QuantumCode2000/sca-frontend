@@ -207,11 +207,11 @@ const WeaponEntry = () => {
         {findWeaponInMovements(weaponCode.trim(), movements).isPending ===
         false ? (
           <div className="flex justify-end mt-4 h-[80%] w-full p-4 rounded-md text-white">
-            <Button
+            {/* <Button
               text={"Registrar Arma y Entrada"}
               className="bg-green-500 mr-5"
               onClick={handleUpdateMovement}
-            />
+            /> */}
             <Button text={"Registrar Entrada"} onClick={handleUpdateMovement} />
           </div>
         ) : (

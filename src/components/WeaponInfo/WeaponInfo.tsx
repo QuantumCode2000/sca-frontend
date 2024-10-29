@@ -9,7 +9,7 @@ function WeaponInfo({
   loading,
 }) {
   useEffect(() => {
-    if (weaponCode.length >= 5) {
+    if (weaponCode.length >= 2) {
       fetchWeaponDetails(weaponCode);
     } else {
       setWeaponDetails(null);
@@ -45,7 +45,7 @@ function WeaponInfo({
           </>
         ) : (
           <p className="mt-4 text-red-500 col-span-2">
-            Ingrese un código de 10 dígitos para buscar la información del arma.
+            Ingrese un código de 2 dígitos para buscar la información del arma.
           </p>
         )}
       </div>

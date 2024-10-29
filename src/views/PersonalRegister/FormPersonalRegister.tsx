@@ -26,6 +26,7 @@ const FormPersonalRegister: React.FC<FormPersonalRegisterProps> = ({
   const { users } = useUsers();
   const [isConfirmModalOpen, setConfirmModalOpen] = useState(false);
   const [localErrors, setLocalErrors] = useState<Partial<User>>({});
+  console.log("here", formData);
 
   const validateForm = (): Partial<User> => {
     const newErrors: Partial<User> = {};
@@ -33,7 +34,7 @@ const FormPersonalRegister: React.FC<FormPersonalRegisterProps> = ({
     // Validaciones estándar
     if (!formData.ci) newErrors.ci = "CI es requerido";
     if (!formData.extension) newErrors.extension = "Extensión es requerida";
-    if (!formData.cm) newErrors.cm = "Carnet Militar es requerido";
+    if (!formData.cm) newErrors.cm = "TIN es requerido";
     if (!formData.correo) newErrors.correo = "Correo Electrónico es requerido";
     if (!formData.grado) newErrors.grado = "Grado es requerido";
     if (!formData.especialidad)
@@ -50,7 +51,7 @@ const FormPersonalRegister: React.FC<FormPersonalRegisterProps> = ({
     }
 
     if (users.some((user) => user.cm === formData.cm)) {
-      newErrors.cm = "Este Carnet Militar ya está registrado";
+      newErrors.cm = "Este TIN ya está registrado";
     }
 
     return newErrors;
@@ -99,8 +100,8 @@ const FormPersonalRegister: React.FC<FormPersonalRegisterProps> = ({
         />
         <Input
           id="cm"
-          label="Carnet Militar"
-          placeholder="Carnet Militar"
+          label="TIN"
+          placeholder="TIN"
           value={formData.cm}
           onChange={handleChange}
           errorMessage={localErrors.cm}
@@ -108,6 +109,7 @@ const FormPersonalRegister: React.FC<FormPersonalRegisterProps> = ({
         <Input
           id="correo"
           label="Correo Electrónico"
+          type="email"
           placeholder="Correo Electrónico"
           value={formData.correo}
           onChange={handleChange}

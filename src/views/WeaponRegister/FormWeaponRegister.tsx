@@ -124,7 +124,7 @@ const FormWeaponRegister: React.FC<FormWeaponRegisterProps> = ({
           <Select
             id="propietario"
             label="Propietario"
-            options={["Departamento VI"]}
+            options={["epartamento IV “Logística” – CGAB"]}
             value={formData.propietario}
             onChange={handleChange}
             errorMessage={localErrors.propietario}

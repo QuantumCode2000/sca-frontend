@@ -39,6 +39,8 @@ const PersonalRegister: React.FC = () => {
   const [formDataEdit, setFormDataEdit] = useState<FormData>({});
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
+  console.log("users:", users);
+
   const closeModal = () => {
     setOpenModal(false);
     setIsEdit(false);
